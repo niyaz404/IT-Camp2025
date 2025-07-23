@@ -1,0 +1,14 @@
+.header{
+    width: 100vw;
+    height: 2rem;
+    background-color: var(--color-control-bg-active);
+    display: flex;
+    justify-content: space-between; /* логотип слева, кнопки справа */
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #e5e7eb; /* светлая нижняя граница */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* легкая тень */
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+}
