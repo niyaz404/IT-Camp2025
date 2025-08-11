@@ -14,6 +14,12 @@ public interface IUserRepository : IRepository
     /// </summary>
     /// <param name="login">Логин</param>
     public Task<UserEntity> SelectByLogin(string login);
+    
+    /// <summary>
+    /// Возвращает пользователя по логину
+    /// </summary>
+    /// <param name="login">Логин</param>
+    public Task<UserInfoEntity> SelectById(Guid id);
 
     /// <summary>
     /// Добавляет нового пользователя в систему

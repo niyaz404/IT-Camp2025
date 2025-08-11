@@ -5,6 +5,7 @@ COPY /src/backend/AuthService/ ./AuthService/
 COPY /src/backend/AuthService.BLL/ ./AuthService.BLL/
 COPY /src/backend/AuthService.DAL/ ./AuthService.DAL/
 COPY /src/backend/AuthService.Consts/ ./AuthService.Consts/
+COPY /src/backend/Share/ ./Share/
 
 # Восстанавливаем зависимости для проекта AuthService
 RUN dotnet restore AuthService/AuthService.csproj

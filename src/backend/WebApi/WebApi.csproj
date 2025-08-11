@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <ImplicitUsings>disable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,7 +15,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Share\Share.csproj" />
       <ProjectReference Include="..\WebApi.BLL\WebApi.BLL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Middleware\" />
     </ItemGroup>
 
 </Project>

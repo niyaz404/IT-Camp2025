@@ -11,12 +11,14 @@
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.13"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\AuthService.BLL\AuthService.BLL.csproj" />
       <ProjectReference Include="..\AuthService.DAL\AuthService.DAL.csproj" />
+      <ProjectReference Include="..\Share\Share.csproj" />
     </ItemGroup>
 
 </Project>

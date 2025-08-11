@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Unity;
-using WebApi.DLL.Providers.Implementation;
-using WebApi.DLL.Providers.Interface;
+using WebApi.DAL.Providers.Implementation;
+using WebApi.DAL.Providers.Interface;
 
 namespace WebApi.BLL.DI;
 

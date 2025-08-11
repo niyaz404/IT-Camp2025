@@ -1,11 +1,20 @@
+using System;
+using System.IO;
+using System.Net.Http;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Share.Services.Implementation;
+using Share.Services.Interface;
 using WebApi.BLL.Services.Implementation.Auth;
+using WebApi.BLL.Services.Implementation.Users;
 using WebApi.BLL.Services.Interface.Auth;
-using WebApi.DLL.Providers.Implementation;
-using WebApi.DLL.Providers.Interface;
+using WebApi.BLL.Services.Interface.Users;
+using WebApi.DAL.Providers.Implementation;
+using WebApi.DAL.Providers.Interface;
 using WebApi.Mappings;
 
 namespace WebApi;
@@ -16,7 +25,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         var hosts = new[]
-            { "http://localhost:3000", "http://frontend:3000", "http://localhost:8081", "http://frontend:8081" };
+            { "http://localhost:3000", "http://localhost:3001", "http://frontend:3000", "http://localhost:8081", "http://frontend:8081" };
         builder.Services.AddCors(options =>  
         {  
             options.AddDefaultPolicy(
@@ -72,14 +81,10 @@ public class Program
         app.UseCors();
 
         // Configure the HTTP request pipeline.
-        if(app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
         app.UseAuthentication();
-        
         app.UseAuthorization();
 
         app.Use(async (context, next) =>
@@ -100,14 +105,17 @@ public class Program
         app.Run();
     }
 
-    public static void ConfigureService(IServiceCollection services)
+    private static void ConfigureService(IServiceCollection services)
     {
         var authServiceUrl = Environment.GetEnvironmentVariable("AUTH_SERVICE_URL") ?? "http://localhost:5000";
 
         services.AddScoped(_ =>  new HttpClient());
+        services.AddScoped<ILogger, ConsoleLogger>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserService, UserService>();
+        
         services.AddScoped<IAuthProvider>(p => new AuthProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserProvider>(p => new UserProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
         
         services.AddAutoMapper(
             typeof(MappingProfile).Assembly,

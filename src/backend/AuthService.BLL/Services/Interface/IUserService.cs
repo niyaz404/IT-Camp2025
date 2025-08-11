@@ -3,22 +3,12 @@
 namespace AuthService.BLL.Services.Interface;
 
 /// <summary>
-/// Сервис аутентификации на уровне бизнес-логики
+/// Сервис работы с опльзователями
 /// </summary>
 public interface IUserService
 {
     /// <summary>
-    /// Генерирует токен доступа
+    /// Получение основной информации о пользователе по идентификатору
     /// </summary>
-    public Task<string> GenerateToken(UserCredentialsModel userCredentials);
-
-    /// <summary>
-    /// Регистрирует пользователя в системе
-    /// </summary>
-    public Task Register(UserModel user);
-
-    /// <summary>
-    /// Сброс пароля
-    /// </summary>
-    public Task ResetPassword(UserCredentialsModel userCredentials);
+    Task<UserInfoModel> GetInfoByIdAsync(Guid userId);
 }

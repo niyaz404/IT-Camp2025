@@ -13,7 +13,7 @@ public class UserModel
     /// <summary>
     /// Фио пользователя
     /// </summary>
-    public string UserName { get; set; }
+    public string Username { get; set; }
     
     /// <summary>
     /// Логин пользователя

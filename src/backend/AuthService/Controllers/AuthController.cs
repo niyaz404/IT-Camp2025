@@ -1,8 +1,14 @@
-﻿using AuthService.BLL.Models;
+﻿using System.Security.Authentication;
+using AuthService.BLL.Models;
 using AuthService.BLL.Services.Interface;
 using AuthService.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Share;
+using Share.Enums;
+using Share.Exceptions;
+using Share.Models;
+using ILogger = Share.Services.Interface.ILogger;
 
 namespace AuthService.Controllers;
 
@@ -10,13 +16,15 @@ namespace AuthService.Controllers;
 [Route("api/[controller]/[action]")]
 public class AuthController : ControllerBase
 {
-    private readonly IUserService _userService;
     private readonly IMapper _mapper;
+    private readonly ILogger _logger;
+    private readonly IAuthService _authService;
     
-    public AuthController(IUserService userService, IMapper mapper)
+    public AuthController(ILogger logger, IMapper mapper, IAuthService authService)
     {
-        _userService = userService;
-        _mapper = mapper;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
     }
     
     /// <summary>
@@ -27,14 +35,20 @@ public class AuthController : ControllerBase
     {
         try
         {
-            await _userService.Register(_mapper.Map<UserModel>(user));
-            var token = await _userService.GenerateToken(
+            await _authService.Register(_mapper.Map<UserModel>(user));
+            var token = await _authService.GenerateToken(
                 new UserCredentialsModel() { Login = user.Login, Password = user.Password });
             return Ok(new { Token = token }); 
             
         }
+        catch (UserAlreadyExistsException e)
+        {
+            _logger.Log(e.Message);
+            return Unauthorized(new ResponseError(ErrorCode.UserAlreadyExists, e.Message));
+        }
         catch (Exception e)
         {
+            _logger.Log(e.Message);
             return BadRequest();
         }
     }
@@ -43,21 +57,47 @@ public class AuthController : ControllerBase
     /// Генерация токена доступа
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> GenerateToken([FromBody] UserCredentials userCredentials)
+    public async Task<IActionResult> GenerateToken([FromBody] UserCredentialsDto userCredentialsDto)
     {
-        var token = await _userService.GenerateToken(_mapper.Map<UserCredentialsModel>(userCredentials));
+        try
+        {
+            var token = await _authService.GenerateToken(_mapper.Map<UserCredentialsModel>(userCredentialsDto));
 
-        return Ok(new { Token = token });
+            return Ok(new { Token = token });
+        }
+        catch (InvalidPasswordException e)
+        {
+            _logger.Log(e.Message);
+            return Unauthorized(new ResponseError(ErrorCode.InvalidPassword, e.Message));
+        }
+        catch (UserNotFoundException e)
+        {
+            _logger.Log(e.Message);
+            return Unauthorized(new ResponseError(ErrorCode.UserNotFound, e.Message));
+        }
+        catch (Exception e)
+        {
+            _logger.Log(e.Message);
+            return BadRequest();
+        }
     }
 
     /// <summary>
     /// Генерация токена доступа
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> ResetPassword([FromBody] UserCredentials userCredentials)
+    public async Task<IActionResult> ResetPassword([FromBody] UserCredentialsDto userCredentialsDto)
     {
-        await _userService.ResetPassword(_mapper.Map<UserCredentialsModel>(userCredentials));
+        try
+        {
+            await _authService.ResetPassword(_mapper.Map<UserCredentialsModel>(userCredentialsDto));
 
-        return Ok();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.Log(e.Message);
+            return BadRequest();
+        }
     }
 }

@@ -8,10 +8,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AuthService.DAL\AuthService.DAL.csproj" />
+      <ProjectReference Include="..\Share\Share.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="13.0.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
     </ItemGroup>
 

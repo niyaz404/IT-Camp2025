@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using WebApi.BLL.Models.Implementation.Auth;
-using WebApi.DLL.Models.Implementation.Auth;
+using WebApi.DAL.Models.Implementation.Auth;
 
 namespace WebApi.BLL.Mappings;
 

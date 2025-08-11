@@ -1,4 +1,5 @@
 ﻿using AuthService.BLL.Models;
+using AuthService.DAL.Models;
 using AuthService.Models;
 using AutoMapper;
 
@@ -12,13 +13,16 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         // Маппинг слоев Контроллеров и Бизнес-логики
-        CreateMap<User, UserModel>();
-        CreateMap<UserModel, User>();
+        CreateMap<UserDto, UserModel>();
+        CreateMap<UserModel, UserDto>();
         
-        CreateMap<UserCredentials, UserCredentialsModel>();
-        CreateMap<UserCredentialsModel, UserCredentials>();
+        CreateMap<UserCredentialsDto, UserCredentialsModel>();
+        CreateMap<UserCredentialsModel, UserCredentialsDto>();
         
-        CreateMap<Role, RoleModel>();
-        CreateMap<RoleModel, Role>();
+        CreateMap<RoleDto, RoleModel>();
+        CreateMap<RoleModel, RoleDto>();
+
+        CreateMap<UserInfoDto, UserInfoModel>();
+        CreateMap<UserInfoModel, UserInfoDto>();
     }
 }

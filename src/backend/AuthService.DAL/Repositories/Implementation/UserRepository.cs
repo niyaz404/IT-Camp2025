@@ -29,6 +29,22 @@ public class UserRepository(string connectionString) : Repository(connectionStri
         return await connection.QueryFirstOrDefaultAsync<UserEntity>(sql, new { login });
     }
     
+    public async Task<UserInfoEntity> SelectById(Guid id)
+    {
+        var sql = @$"
+            select m.*, (
+                select string_agg(r.name, ',')
+                from roles r
+                join user_role ur ON ur.role_id = r.id
+                where ur.user_id = m.id
+              ) AS roles
+            from {_mainTableName} m
+            where m.id = :id";
+
+        await using var connection = new NpgsqlConnection(_connectionString);
+        return await connection.QueryFirstOrDefaultAsync<UserInfoEntity>(sql, new { id });
+    }
+    
     public async Task<Guid> SelectIdByLogin(string login)
     {
         var sql = $"select id from {_mainTableName} where login=:login";

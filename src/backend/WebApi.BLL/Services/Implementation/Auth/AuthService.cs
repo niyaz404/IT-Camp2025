@@ -2,8 +2,8 @@
 using AutoMapper;
 using WebApi.BLL.Models.Implementation.Auth;
 using WebApi.BLL.Services.Interface.Auth;
-using WebApi.DLL.Models.Implementation.Auth;
-using WebApi.DLL.Providers.Interface;
+using WebApi.DAL.Models.Implementation.Auth;
+using WebApi.DAL.Providers.Interface;
 
 namespace WebApi.BLL.Services.Implementation.Auth;
 
@@ -27,9 +27,9 @@ public class AuthService : IAuthService
         // Проверка и обработка JWT-токена
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-        var role = jsonToken?.Claims.First(claim => claim.Type == "role").Value;
+        var roles = jsonToken?.Claims.Where(claim => claim.Type == "role").Select(x => x.Value).ToArray();
 
-        return new LoginResponseModel { Token = token, Role = role };
+        return new LoginResponseModel { Token = token, Roles = roles };
     }
 
 
@@ -39,9 +39,9 @@ public class AuthService : IAuthService
         // Проверка и обработка JWT-токена
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-        var role = jsonToken?.Claims.First(claim => claim.Type == "role").Value;
+        var roles = jsonToken?.Claims.Where(claim => claim.Type == "role").Select(x => x.Value).ToArray();
 
-        return new LoginResponseModel { Token = token, Role = role };
+        return new LoginResponseModel { Token = token, Roles = roles };
     }
 
     public async Task ResetPassword(UserCredentialsModel userCredentials)

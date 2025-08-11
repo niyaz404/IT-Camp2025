@@ -1,3 +1,4 @@
+using System.Data;
 using AuthService.PostgresMigrator.Consts;
 using FluentMigrator;
 
@@ -24,6 +25,7 @@ namespace AuthService.PostgresMigrator.Migrations
 
                     .WithColumn("user_id").AsGuid().NotNullable()
                     .ForeignKey("user_id", Const.Schema, _userTableName, "id")
+                    .OnDelete(Rule.Cascade)
                     .WithColumnDescription("Идентификатор пользователя")
 
                     .WithColumn("role_id").AsInt32().NotNullable()

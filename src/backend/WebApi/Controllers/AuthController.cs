@@ -1,8 +1,17 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Security.Authentication;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Share;
+using Share.Enums;
+using Share.Exceptions;
+using Share.Models;
 using WebApi.BLL.Models.Implementation.Auth;
 using WebApi.BLL.Services.Interface.Auth;
-using WebApi.Models.Implementation.Auth;
+using Share.Services.Interface;
+using WebApi.Models.Auth;
+using WebApi.Models.Common;
 
 namespace WebApi.Controllers
 {
@@ -10,32 +19,55 @@ namespace WebApi.Controllers
     /// Контроллер авторизации
     /// </summary>
     [ApiController]
+    [Route("[controller]/[action]")]
     [Route("api/[controller]/[action]")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public AuthController( IAuthService authService, IMapper mapper)
+        public AuthController(ILogger logger, IMapper mapper, IAuthService authService)
         {
-            _authService = authService;
+            _logger = logger;
             _mapper = mapper;
+            _authService = authService;
         }
         
         /// <summary>
         /// Метод авторизации
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<string>> Login([FromBody] UserCredentialsDto userCredentials)
+        public async Task<ActionResult<LoginResponseDto>> Login([FromBody] UserCredentialsDto userCredentials)
         {
             try
             {
                 var result = await _authService.Login(_mapper.Map<UserCredentialsModel>(userCredentials));
-                return result.Token;
+                return new LoginResponseDto(result.Token);
+            }
+            catch (UserNotFoundException e)
+            {
+                _logger.Log(e);
+                return Unauthorized(new BffApiError(
+                    ErrorCode.InvalidPassword.ToString(),
+                    "Неверный логин или пароль"
+                ));
+            }
+            catch (InvalidPasswordException e)
+            {
+                _logger.Log(e);
+                return Unauthorized(new BffApiError(
+                    ErrorCode.InvalidPassword.ToString(),
+                    "Неверный логин или пароль"
+                ));
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                _logger.Log(e);
+                return BadRequest(new BffApiError(
+                    ErrorCode.UnknownError.ToString(),
+                    "Произошла непредвиденная ошибка"
+                ));
             }
         }
         
@@ -43,16 +75,28 @@ namespace WebApi.Controllers
         /// Метод авторизации
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<string>> Register([FromBody] UserDto user)
+        public async Task<ActionResult<LoginResponseDto>> Register([FromBody] UserDto user)
         {
             try
             {
                 var result = await _authService.Register(_mapper.Map<UserModel>(user));
-                return result.Token;
+                return new LoginResponseDto(result.Token);
+            }
+            catch (UserAlreadyExistsException e)
+            {
+                _logger.Log(e);
+                return BadRequest(new BffApiError(
+                    ErrorCode.UserAlreadyExists.ToString(),
+                    "Пользователь с таким логином уже существует"
+                ));
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                _logger.Log(e);
+                return BadRequest(new BffApiError(
+                    ErrorCode.UnknownError.ToString(),
+                    "Произошла непредвиденная ошибка"
+                ));
             }
         }
         
@@ -67,8 +111,17 @@ namespace WebApi.Controllers
                 await _authService.ResetPassword(_mapper.Map<UserCredentialsModel>(userCredentials));
                 return Ok();
             }
+            catch (UserNotFoundException e)
+            {
+                _logger.Log(e);
+                return Unauthorized(new BffApiError(
+                    ErrorCode.UserNotFound.ToString(),
+                    "Пользователь не найден"
+                ));
+            }
             catch (Exception e)
             {
+                _logger.Log(e);
                 return BadRequest(e.Message);
             }
         }

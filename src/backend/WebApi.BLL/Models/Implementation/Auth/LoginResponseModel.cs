@@ -11,7 +11,7 @@ public class LoginResponseModel
     public string Token { get; set; }
     
     /// <summary>
-    /// Роль пользователя
+    /// Роли пользователя
     /// </summary>
-    public string Role { get; set; }
+    public string[] Roles { get; set; }
 }

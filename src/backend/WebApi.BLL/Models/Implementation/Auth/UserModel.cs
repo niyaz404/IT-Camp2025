@@ -8,7 +8,7 @@ public class UserModel
     /// <summary>
     /// ФИО пользователя
     /// </summary>
-    public string UserName { get; set; }
+    public string Username { get; set; }
     
     /// <summary>
     /// Логин пользователя

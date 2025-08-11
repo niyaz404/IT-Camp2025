@@ -2,7 +2,8 @@ import {useState} from 'react';
 import {TextField} from "@consta/uikit/TextField";
 import './register-form.css';
 import {Button} from "@consta/uikit/Button";
-import {login, register, saveToken} from '../../../services/auth';
+import {register, saveToken} from '../../../services/auth';
+import {Text} from "@consta/uikit/Text";
 
 export default function RegisterForm() {
     const [userNameValue, setuserNameValue] = useState<string | null>(null);
@@ -14,12 +15,10 @@ export default function RegisterForm() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
-        setSuccess(false);
 
         if (!loginValue || !passwordValue) {
             setError('Введите логин и пароль');
@@ -30,13 +29,11 @@ export default function RegisterForm() {
 
         try {
             const data = await register({ userName: userNameValue, login: loginValue, password: passwordValue });
-            saveToken(data.token);
-            setSuccess(true);
 
             // TODO: Навигация или обновление состояния приложения
 
         } catch (err: any) {
-            setError(err.message || 'Ошибка авторизации');
+            setError(err.message || 'Ошибка регистрации');
         } finally {
             setLoading(false);
         }
@@ -64,6 +61,9 @@ export default function RegisterForm() {
                    label="Пароль"
                    placeholder="Пароль"
                />
+               {error && (
+                   <Text view="warning">{error}</Text>
+               )}
                <Button label="Зарегистрироваться" disabled={loading} onClick={handleSubmit}/>
            </div>
         </>

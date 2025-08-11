@@ -6,6 +6,8 @@ using AuthService.DAL.Repositories.Interface;
 using AuthService.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Share.Services.Implementation;
+using ILogger = Share.Services.Interface.ILogger;
 
 namespace AuthService;
 
@@ -32,7 +34,7 @@ public class Program
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "AuthService",
                     ValidAudience = "WebAPI",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key_here"))
+                    IssuerSigningKey = new SymmetricSecurityKey("SuperStrongAndLongJwtSecretKey_123456!"u8.ToArray())
                 };
             });
         builder.Services.AddAuthorization();
@@ -52,6 +54,7 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
@@ -67,9 +70,13 @@ public class Program
         var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ??
                                "Host=localhost;Port=5433;SearchPath=itcamp;Username=auth;Password=password;Database=auth;";
         
+        services.AddScoped<ILogger, ConsoleLogger>();
+        
+        services.AddScoped<IAuthService, BLL.Services.Implementation.AuthService>();
+        services.AddScoped<IUserService, UserService>();
+        
         services.AddScoped<IUserRepository>(_ =>  new UserRepository(connectionString));
         services.AddScoped<IUserToRoleRepository>(_ => new UserToToRoleRepository(connectionString));
-        services.AddScoped<IUserService, UserService>();
         
         services.AddAutoMapper(
             typeof(MappingProfile).Assembly, 

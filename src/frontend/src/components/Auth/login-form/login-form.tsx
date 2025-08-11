@@ -38,9 +38,9 @@ export default function LoginForm() {
 
             // TODO: Навигация или обновление состояния приложения
 
-        } catch (err){
+        } catch (err: Error){
             console.log(err);
-            setError('Ошибка авторизации');
+            setError(err.message);
         } finally {
             setLoading(false);
         }

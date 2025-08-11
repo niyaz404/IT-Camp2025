@@ -16,5 +16,13 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Salt, opt => opt.MapFrom(src => PasswordHelper.GenerateSalt()))
             .ForMember(dest => dest.Hash,
                 opt => opt.MapFrom((src, trg) => PasswordHelper.HashPassword(src.Password, trg.Salt)));
+
+        CreateMap<UserInfoEntity, UserInfoModel>();
+        CreateMap<UserInfoModel, UserInfoEntity>();
+        
+        CreateMap<UserInfoEntity, UserInfoModel>()
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.Split(',', StringSplitOptions.TrimEntries)));
+        CreateMap<UserInfoModel, UserInfoEntity>()
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => string.Join(",", src.Roles)));
     }
 }
