@@ -1,11 +1,16 @@
 import {useState} from 'react';
 import {TextField} from "@consta/uikit/TextField";
-import './login-form.css';
 import {Button} from "@consta/uikit/Button";
 import {Text} from '@consta/uikit/Text';
-import {login, resetPassword, saveToken} from '../../../services/auth';
+import {login, resetPassword} from '../../../services/auth';
+import type {UserInfo} from "../../../types/common-types.tsx";
 
-export default function LoginForm() {
+import './login-form.css';
+
+export default function LoginForm({setUser, onAuthSuccess}: {
+    onAuthSuccess: () => void,
+    setUser: (user: UserInfo | null) => void
+}) {
     const [loginValue, setLoginValue] = useState<string | null>(null);
     const [passwordValue, setPasswordValue] = useState<string | null>(null);
     const [newPasswordValue, setNewPasswordValue] = useState<string | null>(null);
@@ -21,6 +26,8 @@ export default function LoginForm() {
     const [errorReset, setErrorReset] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
+
+
         e.preventDefault();
         setError(null);
         setSuccess(null);
@@ -34,11 +41,11 @@ export default function LoginForm() {
 
         try {
             const data = await login({login: loginValue, password: passwordValue});
-            saveToken(data);
+            setUser(data.user);
 
-            // TODO: Навигация или обновление состояния приложения
+            onAuthSuccess();
 
-        } catch (err: Error){
+        } catch (err: any) {
             console.log(err);
             setError(err.message);
         } finally {
@@ -71,6 +78,14 @@ export default function LoginForm() {
         }
     };
 
+    const onEnterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        {
+            if (e.key === 'Enter') {
+                handleSubmit(e);
+            }
+        }
+    }
+
     return (
         <>
             {!resetPswTab && (<div className={"loginForm"}>
@@ -79,13 +94,15 @@ export default function LoginForm() {
                     value={loginValue}
                     type="text"
                     label="Логин"
-                    placeholder="Логин"/>
+                    placeholder="Логин"
+                    onKeyDown={onEnterKeyDown}/>
                 <TextField
                     onChange={handlePasswordChange}
                     value={passwordValue}
                     type="password"
                     label="Пароль"
                     placeholder="Пароль"
+                    onKeyDown={onEnterKeyDown}
                 />
                 <Text
                     as="span"
@@ -116,6 +133,7 @@ export default function LoginForm() {
                     type="password"
                     label="Новый пароль"
                     placeholder="Новый пароль"
+                    onKeyDown={onEnterKeyDown}
                 />
                 <Text
                     as="span"

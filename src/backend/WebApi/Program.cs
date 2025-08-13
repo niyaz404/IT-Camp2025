@@ -10,8 +10,10 @@ using Microsoft.OpenApi.Models;
 using Share.Services.Implementation;
 using Share.Services.Interface;
 using WebApi.BLL.Services.Implementation.Auth;
+using WebApi.BLL.Services.Implementation.Stands;
 using WebApi.BLL.Services.Implementation.Users;
 using WebApi.BLL.Services.Interface.Auth;
+using WebApi.BLL.Services.Interface.Stands;
 using WebApi.BLL.Services.Interface.Users;
 using WebApi.DAL.Providers.Implementation;
 using WebApi.DAL.Providers.Interface;
@@ -55,7 +57,7 @@ public class Program
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "AuthService",
                     ValidAudience = "WebAPI",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("itcamp_secretkey"))
+                    IssuerSigningKey = new SymmetricSecurityKey("SuperStrongAndLongJwtSecretKey_123456!"u8.ToArray())
                 };
             });
 
@@ -84,6 +86,11 @@ public class Program
         app.UseSwagger();
         app.UseSwaggerUI();
 
+        app.Use(async (context, next) =>
+        {
+            Console.WriteLine("Authorization header: " + context.Request.Headers["Authorization"]);
+            await next();
+        });
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -108,14 +115,17 @@ public class Program
     private static void ConfigureService(IServiceCollection services)
     {
         var authServiceUrl = Environment.GetEnvironmentVariable("AUTH_SERVICE_URL") ?? "http://localhost:5000";
+        var standsServiceUrl = Environment.GetEnvironmentVariable("AUTH_SERVICE_URL") ?? "http://localhost:5000"; //TODO: поменять на нужный
 
         services.AddScoped(_ =>  new HttpClient());
         services.AddScoped<ILogger, ConsoleLogger>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IStandService, StandService>();
         
         services.AddScoped<IAuthProvider>(p => new AuthProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
         services.AddScoped<IUserProvider>(p => new UserProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
+        services.AddScoped<IStandProvider>(p => new StandProvider(standsServiceUrl, p.GetRequiredService<HttpClient>()));
         
         services.AddAutoMapper(
             typeof(MappingProfile).Assembly,

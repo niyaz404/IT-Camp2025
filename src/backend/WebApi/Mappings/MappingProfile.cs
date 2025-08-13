@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using WebApi.BLL.Models.Implementation.Auth;
+using WebApi.BLL.Models.Implementation.Stands;
 using WebApi.BLL.Models.Implementation.Users;
 using WebApi.DAL.Models.Implementation.Users;
 using WebApi.Models.Auth;
+using WebApi.Models.Stands;
 using WebApi.Models.Users;
 
 namespace WebApi.Mappings;
@@ -24,9 +26,8 @@ public class MappingProfile : Profile
         CreateMap<UserInfoModel, UserInfoDto>();
         CreateMap<UserInfoDto, UserInfoModel>();
         
-        // Маппинг слоев Провайдеров и Бизнес-логики
-        CreateMap<UserInfoModel, UserInfo>();
-        CreateMap<UserInfo, UserInfoModel>();
+        CreateMap<StandDto, StandModel>();
+        CreateMap<StandModel, StandDto>();
     }
 
 }

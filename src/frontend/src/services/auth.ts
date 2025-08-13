@@ -1,12 +1,12 @@
-import {jwtDecode, type JwtPayload} from "jwt-decode";
+import type {UserInfo} from "../types/common-types.tsx";
 
 type LoginParams = { login: string; password: string };
-type LoginResponse = { token: string; user: any };
-type RegisterParams = { userName: string; login: string; password: string };
+type LoginResponse = { token: string; user: UserInfo };
+type RegisterParams = { userName: string | null; login: string; password: string };
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-export async function getCurrentUserInfo(): Promise<void> {
+export async function getCurrentUserInfo() {
     const profileRes = await fetch(`${apiUrl}/api/users/me`, {
         headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -40,7 +40,8 @@ export async function login({ login, password }: LoginParams): Promise<LoginResp
     const token = data.token;
     saveToken(token);
 
-    const userInfo = getCurrentUserInfo();
+    const userInfo = await getCurrentUserInfo();
+    saveUser(userInfo);
 
     return { token: data.token, user: userInfo };
 }
@@ -61,7 +62,8 @@ export async function register({ userName, login, password }: RegisterParams): P
     const token = data.token;
     saveToken(token);
 
-    const userInfo = getCurrentUserInfo();
+    const userInfo = await  getCurrentUserInfo();
+    saveUser(userInfo);
 
     return { token: data.token, user: userInfo };
 }
@@ -89,4 +91,17 @@ export function getToken(): string | null {
 
 export function removeToken() {
     localStorage.removeItem('jwtToken');
+}
+
+export function saveUser(user: UserInfo) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+}
+
+export function getUser() {
+    const user = localStorage.getItem('currentUser')
+    return user ? JSON.parse(user) : null;
+}
+
+export function removeUser() {
+    localStorage.removeItem('currentUser');
 }

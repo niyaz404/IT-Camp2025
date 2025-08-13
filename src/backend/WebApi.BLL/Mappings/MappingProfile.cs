@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using WebApi.BLL.Models.Implementation.Auth;
+using WebApi.BLL.Models.Implementation.Stands;
+using WebApi.BLL.Models.Implementation.Users;
 using WebApi.DAL.Models.Implementation.Auth;
+using WebApi.DAL.Models.Implementation.Stands;
+using WebApi.DAL.Models.Implementation.Users;
 
 namespace WebApi.BLL.Mappings;
 
@@ -17,6 +21,12 @@ public class MappingProfile : Profile
         
         CreateMap<User, UserModel>();
         CreateMap<UserModel, User>();
+        
+        CreateMap<Stand, StandModel>();
+        CreateMap<StandModel, Stand>();
+        
+        CreateMap<UserInfo, UserInfoModel>();
+        CreateMap<UserInfoModel, UserInfo>();
     }
 
     public byte[] Convert2(string s)

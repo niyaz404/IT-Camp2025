@@ -1,15 +1,17 @@
 import {useState} from 'react';
 import {TextField} from "@consta/uikit/TextField";
-import './register-form.css';
 import {Button} from "@consta/uikit/Button";
-import {register, saveToken} from '../../../services/auth';
+import {register} from '../../../services/auth';
 import {Text} from "@consta/uikit/Text";
+import type {UserInfo} from "../../../types/common-types.tsx";
 
-export default function RegisterForm() {
-    const [userNameValue, setuserNameValue] = useState<string | null>(null);
+import './register-form.css';
+
+export default function RegisterForm({ setUser, onAuthSuccess }: { onAuthSuccess: () => void, setUser: (user: UserInfo) => void }) {
+    const [userNameValue, setUserNameValue] = useState<string | null>(null);
     const [loginValue, setLoginValue] = useState<string | null>(null);
     const [passwordValue, setPasswordValue] = useState<string | null>(null);
-    const handleuserNameChange = (value: string | null ) => setuserNameValue(value);
+    const handleuserNameChange = (value: string | null ) => setUserNameValue(value);
     const handleLoginChange = (value: string | null ) => setLoginValue(value);
     const handlePasswordChange = (value: string | null ) => setPasswordValue(value);
 
@@ -30,7 +32,8 @@ export default function RegisterForm() {
         try {
             const data = await register({ userName: userNameValue, login: loginValue, password: passwordValue });
 
-            // TODO: Навигация или обновление состояния приложения
+            setUser(data.user);
+            onAuthSuccess();
 
         } catch (err: any) {
             setError(err.message || 'Ошибка регистрации');
@@ -38,6 +41,14 @@ export default function RegisterForm() {
             setLoading(false);
         }
     };
+
+    const onEnterKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        {
+            if (e.key === 'Enter') {
+                handleSubmit(e);
+            }
+        }
+    }
 
     return (
         <>
@@ -60,6 +71,7 @@ export default function RegisterForm() {
                    type="password"
                    label="Пароль"
                    placeholder="Пароль"
+                   onKeyDown={onEnterKeyDown}
                />
                {error && (
                    <Text view="warning">{error}</Text>
