@@ -11,16 +11,22 @@ public interface IAuthProvider
     /// Метод авторизации через сервис авторизации
     /// </summary>
     /// <returns>Токен</returns>
-    public Task<string> Login(UserCredentials userCredentials);
+    Task<TokenPair> Login(UserCredentials userCredentials);
     
     /// <summary>
     /// Метод регистрации
     /// </summary>
     /// <returns>Токен</returns>
-    public Task<string> Register(User user);
+    Task<TokenPair> Register(User user);
+
+    /// <summary>
+    /// Обновление токена
+    /// </summary>
+    /// <returns></returns>
+    Task<TokenPair> RefreshToken(string userId, string refreshToken);
     
     /// <summary>
     /// Метод сброса пароля
     /// </summary>
-    public Task ResetPassword(UserCredentials userCredentials);
+    Task ResetPassword(UserCredentials userCredentials);
 }

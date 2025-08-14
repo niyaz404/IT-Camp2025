@@ -4,20 +4,25 @@ using System.Net.Http;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Share.Services.Implementation;
 using Share.Services.Interface;
+using StackExchange.Redis;
 using WebApi.BLL.Services.Implementation.Auth;
+using WebApi.BLL.Services.Implementation.Cache;
 using WebApi.BLL.Services.Implementation.Stands;
 using WebApi.BLL.Services.Implementation.Users;
-using WebApi.BLL.Services.Interface.Auth;
-using WebApi.BLL.Services.Interface.Stands;
-using WebApi.BLL.Services.Interface.Users;
+using WebApi.BLL.Services.Interfaces.Auth;
+using WebApi.BLL.Services.Interfaces.Cache;
+using WebApi.BLL.Services.Interfaces.Stands;
+using WebApi.BLL.Services.Interfaces.Users;
 using WebApi.DAL.Providers.Implementation;
 using WebApi.DAL.Providers.Interface;
 using WebApi.Mappings;
+using WebApi.Middlewares;
 
 namespace WebApi;
 
@@ -36,11 +41,12 @@ public class Program
                     policy
                         .WithOrigins(hosts)
                         .AllowAnyMethod()
-                        .AllowAnyHeader();
+                        .AllowAnyHeader()
+                        .AllowCredentials();
                 });  
         });
 
-        ConfigureService(builder.Services);
+        ConfigureService(builder);
         
         builder.Services.AddAuthentication(options =>
             {
@@ -82,7 +88,6 @@ public class Program
         
         app.UseCors();
 
-        // Configure the HTTP request pipeline.
         app.UseSwagger();
         app.UseSwaggerUI();
 
@@ -91,6 +96,8 @@ public class Program
             Console.WriteLine("Authorization header: " + context.Request.Headers["Authorization"]);
             await next();
         });
+        
+        app.UseMiddleware<JwtRefreshMiddleware>(); 
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -100,7 +107,7 @@ public class Program
 
             if (context.Request.Path == "/swagger/v1/swagger.json")
             {
-                context.Response.Body.Position = 0; // Важно: сбросить позицию потока перед чтением
+                context.Response.Body.Position = 0;
                 using var reader = new StreamReader(context.Response.Body);
                 var swaggerJson = await reader.ReadToEndAsync();
                 await File.WriteAllTextAsync("swagger.json", swaggerJson);
@@ -112,22 +119,31 @@ public class Program
         app.Run();
     }
 
-    private static void ConfigureService(IServiceCollection services)
+    private static void ConfigureService(WebApplicationBuilder builder)
     {
         var authServiceUrl = Environment.GetEnvironmentVariable("AUTH_SERVICE_URL") ?? "http://localhost:5000";
-        var standsServiceUrl = Environment.GetEnvironmentVariable("AUTH_SERVICE_URL") ?? "http://localhost:5000"; //TODO: поменять на нужный
+        var dataManagerServiceUrl = Environment.GetEnvironmentVariable("DATA_MANAGER_SERVICE_URL") ?? "http://localhost:8003"; //TODO: поменять на нужный
+        var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? "localhost:6379,password=password,abortConnect=false";
 
-        services.AddScoped(_ =>  new HttpClient());
-        services.AddScoped<ILogger, ConsoleLogger>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IStandService, StandService>();
+        builder.Services.AddScoped(_ =>  new HttpClient());
+        builder.Services.AddScoped<ILogger, ConsoleLogger>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IStandService, StandService>();
+        builder.Services.AddSingleton<IRefreshStoreService, RedisRefreshStoreServiceService>();
+        builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+        {
+            var options = ConfigurationOptions.Parse(redisConnectionString);
+            options.AbortOnConnectFail = false;
+            return ConnectionMultiplexer.Connect(options);
+        });
         
-        services.AddScoped<IAuthProvider>(p => new AuthProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
-        services.AddScoped<IUserProvider>(p => new UserProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
-        services.AddScoped<IStandProvider>(p => new StandProvider(standsServiceUrl, p.GetRequiredService<HttpClient>()));
         
-        services.AddAutoMapper(
+        builder.Services.AddScoped<IAuthProvider>(p => new AuthProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
+        builder.Services.AddScoped<IUserProvider>(p => new UserProvider(authServiceUrl, p.GetRequiredService<HttpClient>()));
+        builder.Services.AddScoped<IStandProvider>(p => new StandProvider(dataManagerServiceUrl, p.GetRequiredService<HttpClient>()));
+        
+        builder.Services.AddAutoMapper(
             typeof(MappingProfile).Assembly,
             typeof(WebApi.BLL.Mappings.MappingProfile).Assembly
         );

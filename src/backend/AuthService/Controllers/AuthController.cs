@@ -4,6 +4,7 @@ using AuthService.BLL.Services.Interface;
 using AuthService.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Share;
 using Share.Enums;
 using Share.Exceptions;
@@ -36,15 +37,36 @@ public class AuthController : ControllerBase
         try
         {
             await _authService.Register(_mapper.Map<UserModel>(user));
-            var token = await _authService.GenerateToken(
+            var tokenPair = await _authService.GenerateToken(
                 new UserCredentialsModel() { Login = user.Login, Password = user.Password });
-            return Ok(new { Token = token }); 
+            return Ok(tokenPair); 
             
         }
         catch (UserAlreadyExistsException e)
         {
             _logger.Log(e.Message);
             return Unauthorized(new ResponseError(ErrorCode.UserAlreadyExists, e.Message));
+        }
+        catch (Exception e)
+        {
+            _logger.Log(e.Message);
+            return BadRequest();
+        }
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
+    {
+        try
+        {
+            var tokenPair = await _authService.RefreshToken(request.UserId, request.RefreshToken);
+
+            return Ok(tokenPair);
+        }
+        catch (SecurityTokenException e)
+        {
+            _logger.Log(e.Message);
+            return Unauthorized(new ResponseError(ErrorCode.InvalidRefreshToken, e.Message));
         }
         catch (Exception e)
         {
@@ -61,9 +83,9 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var token = await _authService.GenerateToken(_mapper.Map<UserCredentialsModel>(userCredentialsDto));
+            var tokenPair = await _authService.GenerateToken(_mapper.Map<UserCredentialsModel>(userCredentialsDto));
 
-            return Ok(new { Token = token });
+            return Ok(tokenPair);
         }
         catch (InvalidPasswordException e)
         {

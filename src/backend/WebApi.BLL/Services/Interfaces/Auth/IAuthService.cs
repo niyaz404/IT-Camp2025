@@ -1,6 +1,7 @@
 ﻿using WebApi.BLL.Models.Implementation.Auth;
+using WebApi.DAL.Models.Implementation.Auth;
 
-namespace WebApi.BLL.Services.Interface.Auth;
+namespace WebApi.BLL.Services.Interfaces.Auth;
 
 /// <summary>
 /// Интерфейс сервиса для работы с авторизацией
@@ -11,6 +12,11 @@ public interface IAuthService
     /// Метод входа в систему (получения токена)
     /// </summary>
     public Task<LoginResponseModel> Login(UserCredentialsModel userCredentials);
+    
+    /// <summary>
+    /// Метод обновления токена
+    /// </summary>
+    public Task<TokenPair> RefreshToken(string refreshToken);
     
     /// <summary>
     /// Регистрация пользователя

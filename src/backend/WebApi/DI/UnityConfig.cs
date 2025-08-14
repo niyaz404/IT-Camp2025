@@ -8,7 +8,6 @@ public static class UnityConfig
 {
     static IUnityContainer Configure(IUnityContainer container)
     {
-        // Регистрация зависимостей
         container.RegisterSingleton<ILogger, ConsoleLogger>();
 
         return container;

@@ -6,7 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Share.Services.Interface;
-using WebApi.BLL.Services.Interface.Stands;
+using WebApi.BLL.Services.Interfaces.Stands;
 using WebApi.Models.Stands;
 
 namespace WebApi.Controllers;

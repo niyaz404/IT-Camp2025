@@ -10,15 +10,20 @@ public interface IAuthService
     /// <summary>
     /// Генерирует токен доступа
     /// </summary>
-    public Task<string> GenerateToken(UserCredentialsModel userCredentials);
+    Task<TokenPair> GenerateToken(UserCredentialsModel userCredentials);
 
     /// <summary>
     /// Регистрирует пользователя в системе
     /// </summary>
-    public Task Register(UserModel user);
+    Task Register(UserModel user);
 
     /// <summary>
     /// Сброс пароля
     /// </summary>
-    public Task ResetPassword(UserCredentialsModel userCredentials);
+    Task ResetPassword(UserCredentialsModel userCredentials);
+
+    /// <summary>
+    /// Обновление токена
+    /// </summary>
+    Task<TokenPair> RefreshToken(Guid userId, string refreshToken);
 }

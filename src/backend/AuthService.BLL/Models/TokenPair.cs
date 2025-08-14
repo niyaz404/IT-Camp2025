@@ -1,9 +1,9 @@
-﻿namespace WebApi.BLL.Models.Implementation.Auth;
+﻿namespace AuthService.BLL.Models;
 
 /// <summary>
-/// Модель ответа авторизауии
+/// Пара токенов
 /// </summary>
-public class LoginResponseModel
+public class TokenPair
 {
     /// <summary>
     /// Токен авторизации
@@ -14,9 +14,4 @@ public class LoginResponseModel
     /// Токен авторизации
     /// </summary>
     public string RefreshToken { get; set; }
-    
-    /// <summary>
-    /// Роли пользователя
-    /// </summary>
-    public string[] Roles { get; set; }
 }

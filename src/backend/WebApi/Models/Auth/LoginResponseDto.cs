@@ -3,4 +3,4 @@
 /// <summary>
 /// Dto ответа авторизации
 /// </summary>
-public record LoginResponseDto(string Token);
+public record LoginResponseDto(string AccessToken);

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Share.Services.Interface;
 using WebApi.BLL.Models.Implementation.Stands;
-using WebApi.BLL.Services.Interface.Stands;
+using WebApi.BLL.Services.Interfaces.Stands;
 using WebApi.DAL.Providers.Interface;
 
 namespace WebApi.BLL.Services.Implementation.Stands;

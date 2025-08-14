@@ -25,9 +25,8 @@ public class AuthProvider : IAuthProvider
         _httpClient = httpClient;
     }
     
-    public async Task<string> Login(UserCredentials userCredentials)
+    public async Task<TokenPair> Login(UserCredentials userCredentials)
     {
-        // Создаем HTTP-запрос для AuthService
         var requestContent = new StringContent(JsonConvert.SerializeObject(userCredentials), Encoding.UTF8,
             "application/json");
         var response = await _httpClient.PostAsync($"{_url}/api/auth/generatetoken", requestContent);
@@ -35,14 +34,13 @@ public class AuthProvider : IAuthProvider
         await HttpResponseInspector.EnsureSuccessAsync(response);
             
         var responseContent = await response.Content.ReadAsStringAsync();
-        var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+        var tokenResponse = JsonConvert.DeserializeObject<TokenPair>(responseContent);
 
-        return tokenResponse.Token;
+        return tokenResponse;
     }
 
-    public async Task<string> Register(User user)
+    public async Task<TokenPair> Register(User user)
     {
-        // Создаем HTTP-запрос для AuthService
         var requestContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8,
             "application/json");
         var response = await _httpClient.PostAsync($"{_url}/api/auth/register", requestContent);
@@ -50,26 +48,34 @@ public class AuthProvider : IAuthProvider
         await HttpResponseInspector.EnsureSuccessAsync(response);
             
         var responseContent = await response.Content.ReadAsStringAsync();
-        var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+        var tokenResponse = JsonConvert.DeserializeObject<TokenPair>(responseContent);
 
-        return tokenResponse.Token;
+        return tokenResponse;
+    }
+    
+    public async Task<TokenPair> RefreshToken(string userId, string refreshToken)
+    {
+        var requestContent = new StringContent(
+            JsonConvert.SerializeObject(new { UserId = userId, RefreshToken = refreshToken }),
+            Encoding.UTF8, 
+            "application/json");
+
+        var response = await _httpClient.PostAsync($"{_url}/api/auth/refreshtoken", requestContent);
+
+        await HttpResponseInspector.EnsureSuccessAsync(response);
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var tokenResponse = JsonConvert.DeserializeObject<TokenPair>(responseContent);
+
+        return tokenResponse;
     }
 
     public async Task ResetPassword(UserCredentials userCredentials)
     {
-        // Создаем HTTP-запрос для AuthService
         var requestContent = new StringContent(JsonConvert.SerializeObject(userCredentials), Encoding.UTF8,
             "application/json");
         var response = await _httpClient.PostAsync($"{_url}/api/auth/resetpassword", requestContent);
 
         await HttpResponseInspector.EnsureSuccessAsync(response);
-    }
-
-    /// <summary>
-    /// Модель ответа от сервиса авторизации
-    /// </summary>
-    class TokenResponse
-    {
-        public string Token { get; set; }
     }
 }

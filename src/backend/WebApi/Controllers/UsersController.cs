@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.BLL.Services.Interface.Users;
+using WebApi.BLL.Services.Interfaces.Users;
 using WebApi.Models.Users;
 using ILogger = Share.Services.Interface.ILogger;
 

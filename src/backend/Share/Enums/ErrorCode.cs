@@ -12,4 +12,6 @@ public enum ErrorCode
     UserAlreadyExists = 2,
     
     InvalidPassword = 3,
+    
+    InvalidRefreshToken = 4,
 }

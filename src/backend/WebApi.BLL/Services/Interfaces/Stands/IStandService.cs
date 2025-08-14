@@ -1,6 +1,6 @@
 ﻿using WebApi.BLL.Models.Implementation.Stands;
 
-namespace WebApi.BLL.Services.Interface.Stands;
+namespace WebApi.BLL.Services.Interfaces.Stands;
 
 /// <summary>
 /// Сервис для работы со стендами

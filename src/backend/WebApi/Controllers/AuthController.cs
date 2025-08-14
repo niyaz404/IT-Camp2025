@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Share;
 using Share.Enums;
 using Share.Exceptions;
-using Share.Models;
 using WebApi.BLL.Models.Implementation.Auth;
-using WebApi.BLL.Services.Interface.Auth;
 using Share.Services.Interface;
+using WebApi.BLL.Services.Interfaces.Auth;
 using WebApi.Models.Auth;
 using WebApi.Models.Common;
 
@@ -43,7 +41,15 @@ namespace WebApi.Controllers
             try
             {
                 var result = await _authService.Login(_mapper.Map<UserCredentialsModel>(userCredentials));
-                return new LoginResponseDto(result.Token);
+                
+                Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(7)
+                });
+                return new LoginResponseDto(result.AccessToken);
             }
             catch (UserNotFoundException e)
             {
@@ -80,7 +86,16 @@ namespace WebApi.Controllers
             try
             {
                 var result = await _authService.Register(_mapper.Map<UserModel>(user));
-                return new LoginResponseDto(result.Token);
+                
+                Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(7)
+                });
+                
+                return new LoginResponseDto(result.AccessToken);
             }
             catch (UserAlreadyExistsException e)
             {
@@ -123,6 +138,34 @@ namespace WebApi.Controllers
             {
                 _logger.Log(e);
                 return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult<LoginResponseDto>> RefreshToken()
+        {
+            try
+            {
+                if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+                {
+                    return Unauthorized(new BffApiError(ErrorCode.InvalidRefreshToken.ToString(), "Нет refresh токена"));
+                }
+
+                var tokens = await _authService.RefreshToken(refreshToken);
+
+                Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(7)
+                });
+
+                return Ok(new { accessToken = tokens.AccessToken });
+            }
+            catch
+            {
+                return Unauthorized(new BffApiError(ErrorCode.InvalidRefreshToken.ToString(), "Refresh токен недействителен"));
             }
         }
     }

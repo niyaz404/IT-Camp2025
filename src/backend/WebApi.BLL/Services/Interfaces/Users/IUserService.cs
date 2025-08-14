@@ -1,6 +1,6 @@
 ﻿using WebApi.BLL.Models.Implementation.Users;
 
-namespace WebApi.BLL.Services.Interface.Users;
+namespace WebApi.BLL.Services.Interfaces.Users;
 
 /// <summary>
 /// Сервис работы с опльзователями
