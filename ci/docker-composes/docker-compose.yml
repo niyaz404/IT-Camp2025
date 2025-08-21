@@ -2,8 +2,8 @@ services:
   frontend:
     container_name: ${FRONT_HOST}
     build:
-      context: /../../
-      dockerfile: /ci/dockerfiles/Frontend.Dockerfile
+      context: ../../
+      dockerfile: ci/dockerfiles/Frontend.Dockerfile
       args:
         VITE_API_URL: http://localhost:${FRONT_PORT}
     environment:
@@ -18,8 +18,8 @@ services:
   webapi:
     container_name: webapi
     build:
-      context: /../../
-      dockerfile: /ci/dockerfiles/WebApi.Dockerfile
+      context: ../../
+      dockerfile: ci/dockerfiles/WebApi.Dockerfile
     environment:    
       FRONTEND_URL: ${FRONT_HOST}:${FRONT_PORT}
       AUTH_SERVICE_URL: http://${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}
@@ -33,8 +33,8 @@ services:
   auth_service:
     container_name: ${AUTH_SERVICE_HOST}
     build:
-      context: /../../
-      dockerfile: /ci/dockerfiles/AuthService.Dockerfile
+      context: ../../
+      dockerfile: ci/dockerfiles/AuthService.Dockerfile
     ports:
       - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
     environment:
@@ -46,8 +46,8 @@ services:
   auth_postgres:
     container_name: auth_postgres_db
     build:
-      context: /../../
-      dockerfile: /ci/dockerfiles/AuthPostgres.Dockerfile
+      context: ../../
+      dockerfile: ci/dockerfiles/AuthPostgres.Dockerfile
       args:
         POSTGRES_DB: ${AUTH_POSTGRES_DB}
         POSTGRES_USER: ${AUTH_POSTGRES_USER}
@@ -62,8 +62,8 @@ services:
   auth_migrator:
     container_name: auth_migrator
     build:
-      context: /../../
-      dockerfile: /ci/dockerfiles/AuthPostgresMigrator.Dockerfile
+      context: ../../
+      dockerfile: ci/dockerfiles/AuthPostgresMigrator.Dockerfile
     depends_on:
       - auth_postgres
     environment:
