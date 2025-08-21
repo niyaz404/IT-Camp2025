@@ -23,7 +23,6 @@ services:
     environment:    
       FRONTEND_URL: ${FRONT_HOST}:${FRONT_PORT}
       AUTH_SERVICE_URL: http://${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}
-      CONNECTION_STRING: ${WEBAPI_CONNECTION_STRING}
       ASPNETCORE_URLS: http://+:${WEBAPI_PORT}
       REDIS_CONNECTION_STRING: ${REDIS_HOST}:${REDIS_PORT},password=%{REDIS_PASSWORD},abortConnect=false"
     ports:
