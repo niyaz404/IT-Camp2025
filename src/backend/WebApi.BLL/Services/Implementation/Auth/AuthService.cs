@@ -3,7 +3,7 @@ using System.Security.Claims;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.BLL.Helpers;
-using WebApi.BLL.Models.Implementation.Auth;
+using WebApi.BLL.Models.Auth;
 using WebApi.BLL.Services.Interfaces.Auth;
 using WebApi.BLL.Services.Interfaces.Cache;
 using WebApi.DAL.Models.Implementation.Auth;

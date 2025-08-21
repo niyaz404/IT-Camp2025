@@ -1,6 +1,6 @@
-﻿using WebApi.BLL.Models.Stands;
+﻿using DataManagerService.BLL.Models.Stands;
 
-namespace WebApi.BLL.Services.Interfaces.Stands;
+namespace DataManagerService.BLL.Services.Interfaces.Stands;
 
 /// <summary>
 /// Сервис для работы со стендами
@@ -11,5 +11,5 @@ public interface IStandService
     /// Получить список стендов
     /// </summary>
     /// <returns></returns>
-    Task<IEnumerable<StandModel>> GetAll();
+    Task<IEnumerable<StandModel>> GetAllAsync();
 }

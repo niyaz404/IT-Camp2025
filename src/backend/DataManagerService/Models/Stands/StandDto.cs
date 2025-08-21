@@ -1,7 +1,7 @@
-﻿using WebApi.BLL.Enums;
-using WebApi.BLL.Models.Users;
+﻿using DataManagerService.Models.Users;
+using DataManagerSevice.Common.Enums;
 
-namespace WebApi.Models.Stands;
+namespace DataManagerService.Models.Stands;
 
 /// <summary>
 /// Модель стенда

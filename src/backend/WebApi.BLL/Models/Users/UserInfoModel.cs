@@ -1,4 +1,4 @@
-﻿namespace WebApi.BLL.Models.Implementation.Users;
+﻿namespace WebApi.BLL.Models.Users;
 
 /// <summary>
 /// Основная информация пользователя

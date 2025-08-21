@@ -1,4 +1,4 @@
-﻿using WebApi.BLL.Models.Implementation.Users;
+﻿using WebApi.BLL.Models.Users;
 
 namespace WebApi.BLL.Services.Interfaces.Users;
 

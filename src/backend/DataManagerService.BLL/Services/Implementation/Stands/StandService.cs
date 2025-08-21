@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using DataManagerService.BLL.Models.Stands;
+using DataManagerService.BLL.Services.Interfaces.Stands;
+using DataManagerService.DAL.Repositories.Interface;
 using Share.Services.Interface;
-using WebApi.BLL.Models.Stands;
-using WebApi.BLL.Services.Interfaces.Stands;
-using WebApi.DAL.Providers.Interface;
 
-namespace WebApi.BLL.Services.Implementation.Stands;
+namespace DataManagerService.BLL.Services.Implementation.Stands;
 
 /// <summary>
 /// Сервис для работы со стендами
@@ -13,24 +13,23 @@ public class StandService : IStandService
 {
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
-    private readonly IStandProvider _standProvider;
+    private readonly IStandsRepository _standsRepository;
     
-    public StandService(ILogger logger, IMapper mapper, IStandProvider standProvider)
+    public StandService(ILogger logger, IMapper mapper, IStandsRepository standsRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _standProvider = standProvider ?? throw new ArgumentNullException(nameof(standProvider));
+        _standsRepository = standsRepository ?? throw new ArgumentNullException(nameof(standsRepository));
     }
     
     /// <summary>
     /// Получить список стендов
     /// </summary>
-    /// <returns></returns>
-    public async Task<IEnumerable<StandModel>> GetAll()
+    public async Task<IEnumerable<StandModel>> GetAllAsync()
     {
         try
         {
-            var stands = await _standProvider.GetAllAsync();
+            var stands = await _standsRepository.SelectAllAsync();
             var result = _mapper.Map<IEnumerable<StandModel>>(stands);
 
             return result;

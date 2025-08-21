@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using WebApi.BLL.Models.Implementation.Auth;
-using WebApi.BLL.Models.Implementation.Stands;
-using WebApi.BLL.Models.Implementation.Users;
+using WebApi.BLL.Models.Auth;
+using WebApi.BLL.Models.Stands;
+using WebApi.BLL.Models.Users;
 using WebApi.DAL.Models.Implementation.Auth;
 using WebApi.DAL.Models.Implementation.Stands;
 using WebApi.DAL.Models.Implementation.Users;

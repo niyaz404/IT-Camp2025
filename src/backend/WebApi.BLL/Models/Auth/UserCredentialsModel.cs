@@ -1,4 +1,4 @@
-﻿namespace WebApi.BLL.Models.Implementation.Auth;
+﻿namespace WebApi.BLL.Models.Auth;
 
 /// <summary>
 /// Модель данных пользователя

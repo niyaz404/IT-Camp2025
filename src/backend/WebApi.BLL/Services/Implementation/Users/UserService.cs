@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using AutoMapper;
 using Share.Services.Interface;
-using WebApi.BLL.Models.Implementation.Users;
+using WebApi.BLL.Models.Users;
 using WebApi.BLL.Services.Interfaces.Users;
 using WebApi.DAL.Providers.Interface;
 

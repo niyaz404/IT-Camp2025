@@ -1,12 +1,13 @@
-﻿using WebApi.BLL.Enums;
-using WebApi.BLL.Models.Implementation.Users;
+﻿using DataManagerService.DAL.Models.Base;
+using DataManagerService.DAL.Models.Users;
+using DataManagerSevice.Common.Enums;
 
-namespace WebApi.BLL.Models.Implementation.Stands;
+namespace DataManagerService.DAL.Models.Stands;
 
 /// <summary>
-/// Модель стенда
+/// Сущность стенда
 /// </summary>
-public class StandModel
+public class StandCompositeEntity : BaseEntity
 {
     /// <summary>
     /// Иденитфикатор
@@ -39,12 +40,12 @@ public class StandModel
     public decimal Power { get; set; }
     
     /// <summary>
-    /// Ответственный
-    /// </summary>
-    public UserInfoModel ResponsiblePerson { get; set; }
-    
-    /// <summary>
     /// Состояние
     /// </summary>
     public StandState State { get; set; }
+    
+    /// <summary>
+    /// Ответственный
+    /// </summary>
+    public UserEntity ResponsiblePerson { get; set; }
 }

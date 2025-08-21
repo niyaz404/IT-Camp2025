@@ -1,12 +1,12 @@
 ﻿using WebApi.BLL.Enums;
 using WebApi.BLL.Models.Users;
 
-namespace WebApi.Models.Stands;
+namespace WebApi.BLL.Models.Stands;
 
 /// <summary>
 /// Модель стенда
 /// </summary>
-public class StandDto
+public class StandModel
 {
     /// <summary>
     /// Иденитфикатор

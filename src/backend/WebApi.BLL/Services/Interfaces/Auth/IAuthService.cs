@@ -1,4 +1,4 @@
-﻿using WebApi.BLL.Models.Implementation.Auth;
+﻿using WebApi.BLL.Models.Auth;
 using WebApi.DAL.Models.Implementation.Auth;
 
 namespace WebApi.BLL.Services.Interfaces.Auth;

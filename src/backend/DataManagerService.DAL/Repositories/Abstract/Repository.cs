@@ -1,8 +1,8 @@
 ﻿using System.Data;
-using AuthService.Consts;
+using DataManagerSevice.Common.Consts;
 using Npgsql;
 
-namespace AuthService.DAL.Repositories.Abstract;
+namespace DataManagerService.DAL.Repositories.Abstract;
 
 /// <summary>
 /// Абстрактная сущность репозитория
