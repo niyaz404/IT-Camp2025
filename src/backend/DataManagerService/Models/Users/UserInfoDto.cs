@@ -3,7 +3,7 @@
 /// <summary>
 /// Основная информация пользователя
 /// </summary>
-public class UserInfoModel
+public class UserInfoDto
 {
     /// <summary>
     /// Идентификатор

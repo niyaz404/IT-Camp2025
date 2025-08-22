@@ -23,6 +23,7 @@ services:
     environment:    
       FRONTEND_URL: ${FRONT_HOST}:${FRONT_PORT}
       AUTH_SERVICE_URL: http://${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}
+      DATA_MANAGER_SERVICE_URL: http://${DATA_MANAGER_SERVICE_HOST}:${DATA_MANAGER_SERVICE_PORT}
       ASPNETCORE_URLS: http://+:${WEBAPI_PORT}
       REDIS_CONNECTION_STRING: ${REDIS_HOST}:${REDIS_PORT},password=%{REDIS_PASSWORD},abortConnect=false
     ports:
@@ -40,6 +41,19 @@ services:
     environment:
       CONNECTION_STRING: ${AUTH_CONNECTION_STRING}
       ASPNETCORE_URLS: http://+:${AUTH_SERVICE_PORT}
+    networks:
+      - itcamp_network
+
+  data_manager_service:
+    container_name: ${DATA_MANAGER_SERVICE_HOST}
+    build:
+      context: ../../
+      dockerfile: ci/dockerfiles/DataManagerService.Dockerfile
+    ports:
+      - "${DATA_MANAGER_SERVICE_PORT}:${DATA_MANAGER_SERVICE_PORT}"
+    environment:
+      CONNECTION_STRING: $DATA_MANAGER_SERVICE_CONNECTION_STRING}
+      ASPNETCORE_URLS: http://+:${DATA_MANAGER_SERVICE_PORT}
     networks:
       - itcamp_network
 

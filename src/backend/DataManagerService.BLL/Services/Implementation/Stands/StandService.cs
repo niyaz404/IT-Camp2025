@@ -30,7 +30,7 @@ public class StandService : IStandService
         try
         {
             var stands = await _standsRepository.SelectAllAsync();
-            var result = _mapper.Map<IEnumerable<StandModel>>(stands);
+            var result = _mapper.Map<List<StandModel>>(stands);
 
             return result;
         }

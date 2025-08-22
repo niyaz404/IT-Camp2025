@@ -1,4 +1,6 @@
-﻿using WebApi.DAL.Enums;
+﻿using Newtonsoft.Json;
+using Share.Helpers;
+using WebApi.DAL.Enums;
 using WebApi.DAL.Models.Implementation.Stands;
 using WebApi.DAL.Models.Implementation.Users;
 using WebApi.DAL.Providers.Interface;
@@ -21,40 +23,15 @@ public class StandProvider : IStandProvider
     
     public async Task<IEnumerable<Stand>> GetAllAsync()
     {
-        var result = new List<Stand>
-        {
-            new()
-            {
-                Id = 1, Name = "Стенд 1", Description = "Тестирование двигателей", Frequency = 25.6M, Power = 3,
-                PhasesCount = 3, ResponsiblePerson = new UserInfo { Username = "Иванов Иван Иванович" },
-                State = StandState.On
-            },
-            new()
-            {
-                Id = 2, Name = "Стенд 2", Description = "Тестирование двигателей", Frequency = 25.6M, Power = 3,
-                PhasesCount = 3, ResponsiblePerson = new UserInfo { Username = "Галиев Нияз Рафисович" },
-                State = StandState.Off
-            },
-            new()
-            {
-                Id = 3, Name = "Стенд 3", Description = "Тестирование двигателей", Frequency = 25.6M, Power = 3,
-                PhasesCount = 3, ResponsiblePerson = new UserInfo { Username = "Иванов Иван Иванович" },
-                State = StandState.On
-            },
-            new()
-            {
-                Id = 4, Name = "Стенд 4", Description = "Тестирование двигателей", Frequency = 25.6M, Power = 3,
-                PhasesCount = 1, ResponsiblePerson = new UserInfo { Username = "Иванов Иван Иванович" },
-                State = StandState.Off
-            },
-            new()
-            {
-                Id = 5, Name = "Стенд 5", Description = "Тестирование двигателей", Frequency = 25.6M, Power = 3,
-                PhasesCount = 1, ResponsiblePerson = new UserInfo { Username = "Иванов Иван Иванович" },
-                State = StandState.On
-            },
-        };
-        
-        return result;
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_url}/api/stands/getall");
+
+        var response = await _httpClient.SendAsync(request);
+
+        await HttpResponseInspector.EnsureSuccessAsync(response);
+            
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var standsResponse = JsonConvert.DeserializeObject<IEnumerable<Stand>>(responseContent);
+
+        return standsResponse;
     }
 }

@@ -1,5 +1,5 @@
 ﻿using DataManagerService.BLL.Models.Users;
-using DataManagerSevice.Common.Enums;
+using DataManagerService.Common.Enums;
 
 namespace DataManagerService.BLL.Models.Stands;
 

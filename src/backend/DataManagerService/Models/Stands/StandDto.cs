@@ -1,5 +1,5 @@
 ﻿using DataManagerService.Models.Users;
-using DataManagerSevice.Common.Enums;
+using DataManagerService.Common.Enums;
 
 namespace DataManagerService.Models.Stands;
 
@@ -41,7 +41,7 @@ public class StandDto
     /// <summary>
     /// Ответственный
     /// </summary>
-    public UserInfoModel ResponsiblePerson { get; set; }
+    public UserInfoDto ResponsiblePerson { get; set; }
     
     /// <summary>
     /// Состояние

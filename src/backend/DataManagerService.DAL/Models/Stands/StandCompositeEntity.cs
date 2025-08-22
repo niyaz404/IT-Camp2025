@@ -1,6 +1,6 @@
 ﻿using DataManagerService.DAL.Models.Base;
 using DataManagerService.DAL.Models.Users;
-using DataManagerSevice.Common.Enums;
+using DataManagerService.Common.Enums;
 
 namespace DataManagerService.DAL.Models.Stands;
 

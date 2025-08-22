@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using DataManagerSevice.Common.Consts;
+using DataManagerService.Common.Consts;
 using Npgsql;
 
 namespace DataManagerService.DAL.Repositories.Abstract;

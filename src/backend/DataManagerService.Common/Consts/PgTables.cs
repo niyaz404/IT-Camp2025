@@ -1,4 +1,4 @@
-﻿namespace DataManagerService.Consts;
+﻿namespace DataManagerService.Common.Consts;
 
 /// <summary>
 /// Названия схемы и таблиц БД postgres

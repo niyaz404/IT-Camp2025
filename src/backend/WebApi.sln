@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManagerService.BLL", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManagerService.DAL", "DataManagerService.DAL\DataManagerService.DAL.csproj", "{D0DD62E5-69BF-4DC2-B88E-05FA309C0008}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManagerSevice.Common", "DataManagerSevice.Common\DataManagerSevice.Common.csproj", "{5EB46D60-8EBC-445F-BB22-8E06B8CE70AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManagerService.Common", "DataManagerService.Common\DataManagerService.Common.csproj", "{5EB46D60-8EBC-445F-BB22-8E06B8CE70AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

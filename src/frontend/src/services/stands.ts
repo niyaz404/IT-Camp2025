@@ -6,7 +6,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getAllStands(): Promise<StandInfo[]> {
     try {
-        const data = await authFetch(`${apiUrl}/api/stands/getAll`);
+        const data = await authFetch(`${apiUrl}/stands/getAll`);
 
         return data;
     } catch (err) {
@@ -17,7 +17,7 @@ export async function getAllStands(): Promise<StandInfo[]> {
 
 export async function getStandDetails(id: string): Promise<StandDetails> {
     try {
-        const data = await authFetch(`${apiUrl}/api/stands/${id}`);
+        const data = await authFetch(`${apiUrl}/stands/${id}`);
 
         return data;
     } catch (err) {

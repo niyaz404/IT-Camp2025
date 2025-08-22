@@ -3,7 +3,7 @@ using DataManagerService.DAL.Models.Stands;
 using DataManagerService.DAL.Models.Users;
 using DataManagerService.DAL.Repositories.Abstract;
 using DataManagerService.DAL.Repositories.Interface;
-using DataManagerSevice.Common.Enums;
+using DataManagerService.Common.Enums;
 using Npgsql;
 
 namespace DataManagerService.DAL.Repositories.Implementation;

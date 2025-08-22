@@ -1,4 +1,4 @@
-﻿namespace DataManagerSevice.Common.Enums;
+﻿namespace DataManagerService.Common.Enums;
 
 /// <summary>
 /// Состояние стенда

@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DataManagerSevice.Common\DataManagerSevice.Common.csproj" />
+      <ProjectReference Include="..\DataManagerService.Common\DataManagerService.Common.csproj" />
     </ItemGroup>
 
 </Project>
