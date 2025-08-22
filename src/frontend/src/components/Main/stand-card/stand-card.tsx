@@ -17,10 +17,10 @@ const getStateBadgeProps = (state: StandInfo) => {
     }
 }
 
-export default function StandCard({ stand }: { stand: StandInfo }) {
+export default function StandCard({stand, onClick}: {stand: StandInfo, onClick?: () => void}) {
 
     return (
-        <Card className="card">
+        <Card className="card" onClick={() => onClick && onClick()}>
             <div className={"stateBadgeContainer"}>
                 <Badge {...getStateBadgeProps(stand)} />
             </div>

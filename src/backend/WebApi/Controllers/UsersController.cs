@@ -11,6 +11,7 @@ using ILogger = Share.Services.Interface.ILogger;
 namespace WebApi.Controllers;
 
 [ApiController]
+[Route("[controller]/[action]")]
 [Route("api/[controller]/[action]")]
 public class UsersController : ControllerBase
 {

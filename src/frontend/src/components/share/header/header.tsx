@@ -14,11 +14,7 @@ type MenuItem = {
 
 export default function Header({userInfo, setUserInfo}: { userInfo: UserInfo | null, setUserInfo: (userInfo: UserInfo | null) => void }) {
     const menuItems: MenuItem[] = [
-        {label: "Аналитика", id: "analytics"},
-        {label: "Оборудование", id: "equipment"},
         {label: "Стенды", id: "stands"},
-        {label: "Отчёты", id: "reports"},
-        {label: "Настройки", id: "settings"},
     ];
 
     const [activeItem, setActiveItem] = useState<string>(menuItems[0].id);

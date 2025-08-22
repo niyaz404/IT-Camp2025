@@ -5,13 +5,19 @@ import {type StandInfo} from "../../../types/common-types.tsx";
 import {Text} from "@consta/uikit/Text";
 import {getAllStands} from "../../../services/stands.ts";
 import {getToken} from "../../../services/auth.ts";
-import AppBreadcrumbs from "../../share/breadcrumbs/breadcrumbs.tsx";
 
 import "./stand-monitoring.css";
+import {useBreadcrumbs} from "../../../context/BreadcrumbsContext.tsx";
 
 export default function StandMonitoring() {
     const [stands, setStands] = useState<StandInfo[]>([]);
     const navigate = useNavigate();
+
+    const {setItems} = useBreadcrumbs();
+
+    useEffect(() => {
+        setItems([{label: "Стенды", path: "/stands"}]);
+    }, [setItems]);
 
     useEffect(() => {
         const token = getToken();
@@ -32,18 +38,12 @@ export default function StandMonitoring() {
 
     return (
         <div className={"monitoring"}>
-            <AppBreadcrumbs
-                items={[
-                    {label: "Главная", path: "/"},
-                    {label: "Стенды", path: "/stand"}
-                ]}
-            />
             <Text size="2xl" weight="bold">
                 Стенды
             </Text>
             <div className={"cardsContainer"}>
                 {stands.map((stand) => (
-                    <StandCard key={stand.id} stand={stand}/>
+                    <StandCard key={stand.id} stand={stand} onClick={() => navigate(`/stands/${stand.id}`)}/>
                 ))}
             </div>
         </div>

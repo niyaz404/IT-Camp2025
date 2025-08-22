@@ -5,7 +5,7 @@ services:
       context: ../../
       dockerfile: ci/dockerfiles/Frontend.Dockerfile
       args:
-        VITE_API_URL: http://localhost:${FRONT_PORT}
+        VITE_API_URL: ${VITE_API_URL}
     environment:
       NODE_ENV: development
     ports:
@@ -24,7 +24,7 @@ services:
       FRONTEND_URL: ${FRONT_HOST}:${FRONT_PORT}
       AUTH_SERVICE_URL: http://${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}
       ASPNETCORE_URLS: http://+:${WEBAPI_PORT}
-      REDIS_CONNECTION_STRING: ${REDIS_HOST}:${REDIS_PORT},password=%{REDIS_PASSWORD},abortConnect=false"
+      REDIS_CONNECTION_STRING: ${REDIS_HOST}:${REDIS_PORT},password=%{REDIS_PASSWORD},abortConnect=false
     ports:
       - "${WEBAPI_PORT}:${WEBAPI_PORT}"
     networks:

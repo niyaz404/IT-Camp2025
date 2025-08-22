@@ -1,20 +1,16 @@
-import { Breadcrumbs as ConstaBreadcrumbs } from "@consta/uikit/Breadcrumbs";
-import { useNavigate } from "react-router-dom";
+import {useBreadcrumbs} from "../../../context/BreadcrumbsContext";
+import {Breadcrumbs as ConstaBreadcrumbs} from "@consta/uikit/Breadcrumbs";
+import {useNavigate} from "react-router-dom";
 
-export type BreadcrumbItem = {
-    label: string;
-    path?: string; // если нет — значит это текущая страница
-};
+import "./breadcrumbs.css"
 
-type Props = {
-    items: BreadcrumbItem[];
-};
-
-export default function AppBreadcrumbs({ items }: Props) {
+export default function AppBreadcrumbs() {
+    const {items} = useBreadcrumbs();  // берём крошки из контекста
     const navigate = useNavigate();
 
     return (
         <ConstaBreadcrumbs
+            className={"breadcrumbs"}
             items={items}
             getItemLabel={(item) => item.label}
             getItemHref={(item) => item.path || ""}

@@ -12,6 +12,7 @@ using WebApi.Models.Stands;
 namespace WebApi.Controllers;
 
 [ApiController]
+[Route("[controller]/[action]")]
 [Route("api/[controller]/[action]")]
 public class StandsController : ControllerBase
 {

@@ -7,11 +7,11 @@ type RegisterParams = { userName: string | null; login: string; password: string
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getCurrentUserInfo(): Promise<UserInfo> {
-    return await authFetch(`${apiUrl}/api/users/me`);
+    return await authFetch(`${apiUrl}/users/me`);
 }
 
 export async function login({ login, password }: LoginParams): Promise<LoginResponse> {
-    const res = await fetch(`${apiUrl}/api/auth/login`, {
+    const res = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ login, password }),
@@ -33,7 +33,7 @@ export async function login({ login, password }: LoginParams): Promise<LoginResp
 }
 
 export async function register({ userName, login, password }: RegisterParams): Promise<LoginResponse> {
-    const res = await fetch(`${apiUrl}/api/auth/register`, {
+    const res = await fetch(`${apiUrl}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userName, login, password }),
@@ -66,7 +66,7 @@ export async function authFetch(url: string, options: RequestInit = {}) {
     let res = await fetch(url, { ...options, credentials: 'include' });
 
     if (res.status === 401) {
-        const refreshRes = await fetch(`${apiUrl}/api/auth/refreshtoken`, {
+        const refreshRes = await fetch(`${apiUrl}/auth/refreshtoken`, {
             method: 'POST',
             credentials: 'include',
         });
@@ -96,7 +96,7 @@ export async function authFetch(url: string, options: RequestInit = {}) {
 }
 
 export async function resetPassword({ login, password }: LoginParams): Promise<void> {
-    const res = await fetch(`${apiUrl}/api/auth/resetpassword`, {
+    const res = await fetch(`${apiUrl}/auth/resetpassword`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ login, password }),

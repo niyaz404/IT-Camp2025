@@ -1,0 +1,14 @@
+.monitoring {
+    display: flex;
+    padding: 3em;
+    width: calc(100% - 6em);
+    row-gap: 1em;
+    flex-direction: column;
+}
+
+.cardsContainer {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 20%));
+    gap: 4em;
+}

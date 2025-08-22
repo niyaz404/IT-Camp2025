@@ -31,6 +31,8 @@ export default function AuthForm({setUser}: { setUser: (user: UserInfo | null) =
         <>
             <div className="authForm">
                 <Text className="formHeader" size="3xl" weight="bold">газпром_нефть</Text>
+                {activeTab.id === 'login' && <Text className="formHeader" size="2xl" weight="bold">Вход в систему PREDITRIX</Text>}
+                {activeTab.id === 'register' && <Text className="formHeader" size="2xl" weight="bold">Регистрация в системе PREDITRIX</Text>}
                 <Tabs<TabItem>
                     items={items}
                     value={activeTab}
