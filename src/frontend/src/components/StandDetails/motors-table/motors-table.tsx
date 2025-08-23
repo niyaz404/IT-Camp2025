@@ -20,7 +20,6 @@ const getStateBadgeProps = (state: StandDetails | MotorInfo) => {
 
 const handleRowClick = (row: MotorInfo) => {
     console.log("Клик по мотору:", row);
-    // здесь можно делать редирект или открывать модальное окно
 };
 
 export default function MotorsTable({ motors }: { motors: MotorInfo[] }) {

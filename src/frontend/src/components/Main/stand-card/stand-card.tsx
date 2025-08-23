@@ -6,9 +6,9 @@ import { Text } from "@consta/uikit/Text";
 import { User } from "@consta/uikit/User";
 import {Tag} from "@consta/uikit/Tag";
 import {type StandInfo, StandState} from "../../../types/common-types.tsx";
+import {formatFio} from "../../../utils/string-utils.ts";
 
 import './stand-card.css'
-import {formatFio} from "../../../utils/string-utils.ts";
 
 const getStateBadgeProps = (state: StandInfo) => {
     switch (state.state) {

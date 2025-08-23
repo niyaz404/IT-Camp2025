@@ -1,49 +1,45 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import StandCard from "../stand-card/stand-card.tsx";
-import {type StandInfo} from "../../../types/common-types.tsx";
-import {Text} from "@consta/uikit/Text";
-import {getAllStands} from "../../../services/stands.ts";
-import {getToken} from "../../../services/auth.ts";
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import StandCard from "../stand-card/stand-card";
+import { type StandInfo } from "../../../types/common-types";
+import { Text } from "@consta/uikit/Text";
+import { getAllStands } from "../../../services/stands";
 import "./stand-monitoring.css";
-import {useBreadcrumbs} from "../../../context/BreadcrumbsContext.tsx";
+import { useBreadcrumbs } from "../../../context/BreadcrumbsContext";
+import { useAuth } from "../../../context/AuthContext.tsx";
 
 export default function StandMonitoring() {
     const [stands, setStands] = useState<StandInfo[]>([]);
     const navigate = useNavigate();
-
-    const {setItems} = useBreadcrumbs();
+    const { setItems } = useBreadcrumbs();
+    const { authenticated, keycloak, loading } = useAuth();
+    const token = keycloak?.token;
 
     useEffect(() => {
-        setItems([{label: "Стенды", path: "/stands"}]);
+        setItems([{ label: "Стенды", path: "/stands" }]);
     }, [setItems]);
 
     useEffect(() => {
-        const token = getToken();
-        if (!token) {
-            navigate("/login");
-            return;
-        }
+        if (loading) return;
+        if (!authenticated || !token) return;
 
-        getAllStands()
+        getAllStands(token)
             .then((data) => setStands(data))
             .catch((err) => {
                 console.error(err);
-                if (err?.status === 401 || err?.message?.includes("401")) {
-                    navigate("/login");
-                }
             });
-    }, [navigate]);
+    }, [authenticated, token, loading]);
 
     return (
-        <div className={"monitoring"}>
-            <Text size="2xl" weight="bold">
-                Стенды
-            </Text>
-            <div className={"cardsContainer"}>
+        <div className="monitoring">
+            <Text size="2xl" weight="bold">Стенды</Text>
+            <div className="cardsContainer">
                 {stands.map((stand) => (
-                    <StandCard key={stand.id} stand={stand} onClick={() => navigate(`/stands/${stand.id}`)}/>
+                    <StandCard
+                        key={stand.id}
+                        stand={stand}
+                        onClick={() => navigate(`/stands/${stand.id}`)}
+                    />
                 ))}
             </div>
         </div>

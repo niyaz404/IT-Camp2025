@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import "./breadcrumbs.css"
 
 export default function AppBreadcrumbs() {
-    const {items} = useBreadcrumbs();  // берём крошки из контекста
+    const {items} = useBreadcrumbs();
     const navigate = useNavigate();
 
     return (

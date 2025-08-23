@@ -13,25 +13,30 @@ import {useBreadcrumbs} from "../../../context/BreadcrumbsContext.tsx";
 import {Text} from "@consta/uikit/Text";
 import {Badge} from "@consta/uikit/Badge";
 import MotorsTable from "../motors-table/motors-table.tsx";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function StandDetailsPage() {
     const {standId} = useParams<{standId: string}>();
     const [stand, setStand] = useState<StandDetails | null>(null);
     const {setItems} = useBreadcrumbs();
 
+    const { authenticated, loading, keycloak } = useAuth();
+    const token = keycloak?.token ?? null;
+
     useEffect(() => {
-        if (standId) {
-            getStandDetails(standId)
-                .then((s) => {
-                    setStand(s);
-                    setItems([
-                        {label: "Стенды", path: "/stands"},
-                        {label: s.name, path: `/stands/${s.id}`},
-                    ]);
-                })
-                .catch(console.error);
-        }
-    }, [standId, setItems]);
+        if (!standId) return;
+        if (loading || !authenticated || !token) return;
+
+        getStandDetails(standId, token)
+            .then((s) => {
+                setStand(s);
+                setItems([
+                    {label: "Стенды", path: "/stands"},
+                    {label: s.name, path: `/stands/${s.id}`},
+                ]);
+            })
+            .catch(console.error);
+    }, [standId, setItems, loading, authenticated, token]);
 
     const getStateBadgeProps = (state: StandDetails | MotorInfo) => {
         switch (state.state) {

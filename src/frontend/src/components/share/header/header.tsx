@@ -1,26 +1,38 @@
 import {useEffect, useRef, useState} from "react";
 import {Text} from "@consta/uikit/Text";
-
-import './header.css';
-import {removeToken, removeUser} from "../../../services/auth.ts";
-import type {UserInfo} from "../../../types/common-types.tsx";
-import {User} from "@consta/uikit/User";
+import {User as ConstaUser} from "@consta/uikit/User";
+import {useAuth} from "../../../context/AuthContext";
 import {formatFio} from "../../../utils/string-utils.ts";
+import {RoleCodes, Roles} from "../../../types/roles.ts";
 
-type MenuItem = {
-    label: string;
-    id: string;
-};
+import "./header.css";
 
-export default function Header({userInfo, setUserInfo}: { userInfo: UserInfo | null, setUserInfo: (userInfo: UserInfo | null) => void }) {
-    const menuItems: MenuItem[] = [
-        {label: "Стенды", id: "stands"},
-    ];
+function getDisplayName(profile: any | null): string {
+    if (!profile)
+        return "Пользователь";
+    if(profile.roles.length === 1 && profile.roles[0] == RoleCodes.ADMIN)
+        return "Администратор";
+    const first = profile.firstName || profile.given_name;
+    const last = profile.lastName || profile.family_name;
+    const patronymic = profile.patronymic || profile.patronymic;
+    if (first || last)
+        return formatFio(`${last} ${first} ${patronymic}`);
+    return profile.username || profile.email || "Пользователь";
+}
+
+function getDisplayRole(profile: any | null): string {
+    const roles = profile?.roles || [];
+    return roles.length > 0 ? Roles[roles[0] as keyof typeof Roles] : "";
+}
+
+export default function Header() {
+    const menuItems = [{label: "Стенды", id: "stands"}];
 
     const [activeItem, setActiveItem] = useState<string>(menuItems[0].id);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
     const menuRef = useRef<HTMLDivElement>(null);
+
+    const {keycloak, authenticated, user, logout} = useAuth();
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
@@ -33,15 +45,17 @@ export default function Header({userInfo, setUserInfo}: { userInfo: UserInfo | n
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+
+
     return (
         <div className="header">
             <div className="logo">
-                <Text size="l" weight="bold" key="logo">
+                <Text size="l" weight="bold">
                     PREDITRIX
                 </Text>
             </div>
 
-            {userInfo && (
+            {authenticated && (
                 <div className="navigationMenu">
                     {menuItems.map((item) => (
                         <div
@@ -49,30 +63,37 @@ export default function Header({userInfo, setUserInfo}: { userInfo: UserInfo | n
                             className={`menuItem ${activeItem === item.id ? "active" : ""}`}
                             onClick={() => setActiveItem(item.id)}
                         >
-                            <Text as="span" size="s">{item.label}</Text>
+                            <Text as="span" size="s">
+                                {item.label}
+                            </Text>
                         </div>
                     ))}
                 </div>
             )}
 
-            {userInfo && (
+            {authenticated && (
                 <div
                     className="user"
                     ref={menuRef}
                     style={{position: "relative", cursor: "pointer"}}
                     onClick={() => setIsMenuOpen((prev) => !prev)}
                 >
-                    <User name={formatFio(userInfo.username)} info="Оператор" width={"full"} size={"l"} withArrow={true} />
+                    <ConstaUser
+                        name={getDisplayName(user)}
+                        info={getDisplayRole(user)}
+                        width="full"
+                        size="l"
+                        withArrow
+                    />
 
                     {isMenuOpen && (
                         <div className="userDropdown">
                             <div
                                 className="dropdownItem"
-                                onClick={() => {
-                                    removeToken();
-                                    removeUser();
-                                    setUserInfo(null);
-                                    window.location.reload();
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsMenuOpen(false);
+                                    logout();
                                 }}
                             >
                                 Выйти
@@ -84,38 +105,3 @@ export default function Header({userInfo, setUserInfo}: { userInfo: UserInfo | n
         </div>
     );
 }
-
-
-// const [underlineStyle, setUnderlineStyle] = React.useState({ left: 0, width: 0 });
-// const menuRef = React.useRef<HTMLDivElement>(null);
-//
-// React.useEffect(() => {
-//     if (!menuRef.current) return;
-//     const activeEl = menuRef.current.querySelector('.menuItem.active') as HTMLElement | null;
-//     if (activeEl) {
-//         setUnderlineStyle({
-//             left: activeEl.offsetLeft,
-//             width: activeEl.offsetWidth,
-//         });
-//     }
-// }, [activeItem]);
-
-// <div className="navigationMenu" ref={menuRef}>
-//     {menuItems.map((item) => (
-//         <div
-//             key={item.id}
-//             className={`menuItem ${activeItem === item.id ? "active" : ""}`}
-//             onClick={() => setActiveItem(item.id)}
-//         >
-//             {item.label}
-//         </div>
-//     ))}
-//     <div className="underline" style={{ left: underlineStyle.left, width: underlineStyle.width }} />
-// </div>
-
-
-{/*<Avatar size="m" name={userInfo.username}/>*/}
-{/*<div style={{display: "flex", flexDirection: "column"}}>*/}
-{/*    <Text size="m">{formatFio(userInfo.username)}</Text>*/}
-{/*    <Text size="s" view="secondary">Оператор</Text>*/}
-{/*</div>*/}

@@ -6,41 +6,40 @@ services:
       dockerfile: ci/dockerfiles/Frontend.Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL}
+        VITE_KEYCLOAK_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_INTERNAL_PORT}
+        VITE_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+        VITE_KEYCLOAK_CLIENT_ID: frontend
     environment:
       NODE_ENV: development
     ports:
       - "${FRONT_PORT}:80"
+    depends_on:
+      - webapi
     networks:
       - itcamp_network
     volumes:
       - .:/app
 
   webapi:
-    container_name: webapi
+    container_name: ${WEBAPI_HOST}
     build:
       context: ../../
       dockerfile: ci/dockerfiles/WebApi.Dockerfile
     environment:    
       FRONTEND_URL: ${FRONT_HOST}:${FRONT_PORT}
-      AUTH_SERVICE_URL: http://${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}
+      AUTH_SERVICE_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
       DATA_MANAGER_SERVICE_URL: http://${DATA_MANAGER_SERVICE_HOST}:${DATA_MANAGER_SERVICE_PORT}
       ASPNETCORE_URLS: http://+:${WEBAPI_PORT}
-      REDIS_CONNECTION_STRING: ${REDIS_HOST}:${REDIS_PORT},password=%{REDIS_PASSWORD},abortConnect=false
+      REDIS_CONNECTION_STRING: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},abortConnect=false
+      KEYCLOAK_HOST: ${KEYCLOAK_HOST}
+      KEYCLOAK_PORT: ${KEYCLOAK_PORT}
+      KEYCLOAK_INTERNAL_PORT: ${KEYCLOAK_INTERNAL_PORT}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_AUDIENCE: ${KEYCLOAK_AUDIENCE}
     ports:
       - "${WEBAPI_PORT}:${WEBAPI_PORT}"
-    networks:
-      - itcamp_network
-
-  auth_service:
-    container_name: ${AUTH_SERVICE_HOST}
-    build:
-      context: ../../
-      dockerfile: ci/dockerfiles/AuthService.Dockerfile
-    ports:
-      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
-    environment:
-      CONNECTION_STRING: ${AUTH_CONNECTION_STRING}
-      ASPNETCORE_URLS: http://+:${AUTH_SERVICE_PORT}
+    depends_on:
+      - keycloak
     networks:
       - itcamp_network
 
@@ -52,66 +51,52 @@ services:
     ports:
       - "${DATA_MANAGER_SERVICE_PORT}:${DATA_MANAGER_SERVICE_PORT}"
     environment:
-      CONNECTION_STRING: $DATA_MANAGER_SERVICE_CONNECTION_STRING}
+      CONNECTION_STRING: ${DATA_MANAGER_SERVICE_CONNECTION_STRING}
       ASPNETCORE_URLS: http://+:${DATA_MANAGER_SERVICE_PORT}
     networks:
       - itcamp_network
 
-  auth_postgres:
-    container_name: auth_postgres_db
-    build:
-      context: ../../
-      dockerfile: ci/dockerfiles/AuthPostgres.Dockerfile
-      args:
-        POSTGRES_DB: ${AUTH_POSTGRES_DB}
-        POSTGRES_USER: ${AUTH_POSTGRES_USER}
-        POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD}
-    ports:
-      - "5433:5432"
+  keycloak_postgres:
+    image: postgres:15
+    container_name: keycloak_postgres
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_POSTGRES_DB}
+      POSTGRES_USER: ${KEYCLOAK_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD}
     volumes:
-      - auth-postgres-data:/var/lib/postgresql/data
+      - keycloak-postgres-data:/var/lib/postgresql/data
     networks:
       - itcamp_network
-
-  auth_migrator:
-    container_name: auth_migrator
-    build:
-      context: ../../
-      dockerfile: ci/dockerfiles/AuthPostgresMigrator.Dockerfile
-    depends_on:
-      - auth_postgres
-    environment:
-      POSTGRES_HOST: ${AUTH_POSTGRES_HOST}
-      POSTGRES_DB: ${AUTH_POSTGRES_DB}
-      POSTGRES_USER: ${AUTH_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-    networks:
-      - itcamp_network
-
-  redis:
-    image: redis:7-alpine
-    container_name: redis
-    command: >
-      sh -c 'exec redis-server
-      --appendonly yes
-      --save 60 1000
-      --requirepass "$$REDIS_PASSWORD"'
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-    ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
-    volumes:
-      - redis_data:/data
     healthcheck:
-      test: ["CMD-SHELL", 'redis-cli -a "$REDIS_PASSWORD" ping | grep PONG']
+      test: ["CMD-SHELL", "pg_isready -U ${KEYCLOAK_POSTGRES_USER} -d ${KEYCLOAK_POSTGRES_DB}"]
       interval: 10s
-      timeout: 3s
+      timeout: 5s
       retries: 5
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.2
+    container_name: keycloak
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/${KEYCLOAK_POSTGRES_DB}
+      KC_DB_USERNAME: ${KEYCLOAK_POSTGRES_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD}
+    volumes:
+      - ./keycloak/realms:/opt/keycloak/data/import
+      - ./init-keycloak.sh:/docker-entrypoint-init.d/init-keycloak.sh
+    ports:
+      - "${KEYCLOAK_PORT}:${KEYCLOAK_INTERNAL_PORT}"
+    depends_on:
+      keycloak_postgres:
+        condition: service_healthy
+    networks:
+      - itcamp_network
+
 volumes:
-  webapi-postgres-data:  
-  auth-postgres-data:
+  keycloak-postgres-data:
   redis_data:
 
 networks:

@@ -1,7 +1,7 @@
 export function formatFio(fio: string): string {
     if (!fio) return "";
 
-    const parts = fio.trim().split(/\s+/); // Разделяем по пробелам
+    const parts = fio.trim().split(/\s+/);
     if (parts.length === 1) {
         return parts[0];
     }
