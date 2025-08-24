@@ -5,8 +5,8 @@ services:
       context: ../../
       dockerfile: ci/dockerfiles/Frontend.Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL}
-        VITE_KEYCLOAK_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_INTERNAL_PORT}
+        VITE_API_URL: http://localhost:${WEBAPI_PORT}
+        VITE_KEYCLOAK_URL: http://localhost:${KEYCLOAK_PORT}
         VITE_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
         VITE_KEYCLOAK_CLIENT_ID: frontend
     environment:
@@ -27,15 +27,14 @@ services:
       dockerfile: ci/dockerfiles/WebApi.Dockerfile
     environment:    
       FRONTEND_URL: ${FRONT_HOST}:${FRONT_PORT}
-      AUTH_SERVICE_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      AUTH_SERVICE_URL: http://${KEYCLOAK_HOST}:${KEYCLOAK_INTERNAL_PORT}/realms/${KEYCLOAK_REALM}
       DATA_MANAGER_SERVICE_URL: http://${DATA_MANAGER_SERVICE_HOST}:${DATA_MANAGER_SERVICE_PORT}
       ASPNETCORE_URLS: http://+:${WEBAPI_PORT}
-      REDIS_CONNECTION_STRING: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},abortConnect=false
-      KEYCLOAK_HOST: ${KEYCLOAK_HOST}
-      KEYCLOAK_PORT: ${KEYCLOAK_PORT}
-      KEYCLOAK_INTERNAL_PORT: ${KEYCLOAK_INTERNAL_PORT}
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_AUDIENCE: ${KEYCLOAK_AUDIENCE}
+      KEYCLOAK_PUBLIC_URL: http://localhost:${KEYCLOAK_PORT}
+      KEYCLOAK_INTERNAL_URL: http://host.docker.internal:${KEYCLOAK_PORT}
+      
     ports:
       - "${WEBAPI_PORT}:${WEBAPI_PORT}"
     depends_on:
@@ -78,6 +77,10 @@ services:
     container_name: keycloak
     command: start-dev --import-realm
     environment:
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: ${KEYCLOAK_PORT}
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
@@ -86,7 +89,6 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_POSTGRES_PASSWORD}
     volumes:
       - ./keycloak/realms:/opt/keycloak/data/import
-      - ./init-keycloak.sh:/docker-entrypoint-init.d/init-keycloak.sh
     ports:
       - "${KEYCLOAK_PORT}:${KEYCLOAK_INTERNAL_PORT}"
     depends_on:

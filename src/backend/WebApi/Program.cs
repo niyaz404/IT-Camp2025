@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,9 +31,9 @@ public class Program
         var hosts = new[]
         {
             "http://localhost:3000",
-            "http://frontend:3000",
+            "http://frontend:3000"
         };
-        
+
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy =>
@@ -50,34 +51,41 @@ public class Program
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                var keycloakHost = Environment.GetEnvironmentVariable("KEYCLOAK_HOST") ?? "localhost";
-                var keycloakInternalPort = Environment.GetEnvironmentVariable("KEYCLOAK_INTERNAL_PORT") ?? "8080";
-                var keycloakPort = Environment.GetEnvironmentVariable("KEYCLOAK_PORT") ?? "8090";
-                var keycloakRealm = Environment.GetEnvironmentVariable("KEYCLOAK_REALM") ?? "preditrix";
-                var keycloakPublicUrl = Environment.GetEnvironmentVariable("KEYCLOAK_PUBLIC_URL");
+                var realm    = Environment.GetEnvironmentVariable("KEYCLOAK_REALM") ?? "preditrix";
+                var port     = Environment.GetEnvironmentVariable("KEYCLOAK_PORT") ?? "8090";
+                var audience = Environment.GetEnvironmentVariable("KEYCLOAK_AUDIENCE") ?? "webapi";
 
-                Console.WriteLine(keycloakPublicUrl);
-                Console.WriteLine($"http://{keycloakHost}:{keycloakInternalPort}/realms/{keycloakRealm}");
-                var authority = keycloakPublicUrl ??
-                                $"http://{keycloakHost}:{keycloakInternalPort}/realms/{keycloakRealm}";
+                var issuer   = $"http://localhost:{port}/realms/{realm}";
+                var jwksUrl  = $"http://host.docker.internal:{port}/realms/{realm}/protocol/openid-connect/certs";
 
-                options.Authority = authority;
                 options.RequireHttpsMetadata = false;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuers = new[]
-                    {
-                        $"http://localhost:{keycloakInternalPort}/realms/{keycloakRealm}",
-                        $"http://localhost:{keycloakPort}/realms/{keycloakRealm}",
-                        authority
-                    },
+                    ValidIssuer = issuer,
+
                     ValidateAudience = true,
-                    ValidAudience = Environment.GetEnvironmentVariable("KEYCLOAK_AUDIENCE") ?? "webapi",
+                    ValidAudience = audience,
+
                     ValidateLifetime = true,
+
                     RoleClaimType = "roles",
                     NameClaimType = "preferred_username"
+                };
+
+                var http = new HttpClient();
+                var json = http.GetStringAsync(jwksUrl).GetAwaiter().GetResult();
+                var keys = new JsonWebKeySet(json);
+                options.TokenValidationParameters.IssuerSigningKeys = keys.Keys;
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = ctx =>
+                    {
+                        Console.WriteLine("JWT fail: " + ctx.Exception);
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
@@ -90,7 +98,8 @@ public class Program
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
+            if (File.Exists(xmlPath))
+                options.IncludeXmlComments(xmlPath);
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {

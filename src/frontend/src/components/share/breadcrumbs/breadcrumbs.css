@@ -1,3 +1,10 @@
 .breadcrumbs{
-    margin: 2em auto 0 3em;
+    width: calc(100% - var(--left-offset));;
+    padding-top: 2em;
+    padding-left: var(--left-offset);
+    background-color: var(--color-bg-secondary);
+}
+
+.skeleton{
+    border-radius: 5px;
 }

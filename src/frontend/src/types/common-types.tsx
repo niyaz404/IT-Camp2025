@@ -13,6 +13,13 @@ export enum MotorState {
     Off = 2
 }
 
+export enum MotorDefectStatus {
+    None = "NONE", //дефектов нет
+    Minor = "MINOR", //незначительные дефекты
+    Critical = "CRITICAL", //критический дефект
+    Unknown = "UNKNOWN"
+}
+
 export enum MotorType {
     Async = "Асинхронный",
     Valve = "Вентильный",
@@ -42,12 +49,14 @@ export type MotorInfo = {
     id: number;
     name: string;
     state: MotorState,
+    defectStatus: MotorDefectStatus;
     type: MotorType
     power: number;
 }
 
 export type MotorDetails = {
     id: number;
+    standId: number;
     name: string;
     description: string;
     phasesCount: number;
@@ -55,4 +64,5 @@ export type MotorDetails = {
     power: number;
     type: MotorType
     state: MotorState
+    defectStatus: MotorDefectStatus;
 }

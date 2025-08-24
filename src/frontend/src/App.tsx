@@ -5,6 +5,7 @@ import Header from "./components/share/header/header.tsx";
 import AppBreadcrumbs from "./components/share/breadcrumbs/breadcrumbs.tsx";
 import { BreadcrumbsProvider } from "./context/BreadcrumbsContext.tsx";
 import { presetGpnDefault, Theme } from "@consta/uikit/Theme";
+import MotorDetailsPage from "./pages/MotorDetails/MotorDetailsPage.tsx";
 
 import "./App.css";
 
@@ -18,6 +19,7 @@ function App() {
                     <Routes>
                         <Route path="/stands" element={<MainPage />} />
                         <Route path="/stands/:standId" element={<StandDetailsPage />} />
+                        <Route path="/stands/:standId/motors/:motorId" element={<MotorDetailsPage />} />
                         <Route path="/" element={<Navigate to="/stands" replace />} />
                         <Route path="*" element={<Navigate to="/stands" replace />} />
                     </Routes>
