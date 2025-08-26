@@ -5,8 +5,8 @@ services:
       context: ../../
       dockerfile: ci/dockerfiles/Frontend.Dockerfile
       args:
-        VITE_API_URL: http://localhost:${WEBAPI_PORT}
-        VITE_KEYCLOAK_URL: http://localhost:${KEYCLOAK_PORT}
+        VITE_API_URL: http://192.168.1.131:${WEBAPI_PORT}
+        VITE_KEYCLOAK_URL: http://192.168.1.131:${KEYCLOAK_PORT}
         VITE_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
         VITE_KEYCLOAK_CLIENT_ID: frontend
     environment:
@@ -32,8 +32,8 @@ services:
       ASPNETCORE_URLS: http://+:${WEBAPI_PORT}
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_AUDIENCE: ${KEYCLOAK_AUDIENCE}
-      KEYCLOAK_PUBLIC_URL: http://localhost:${KEYCLOAK_PORT}
-      KEYCLOAK_INTERNAL_URL: http://host.docker.internal:${KEYCLOAK_PORT}
+      KEYCLOAK_PUBLIC_URL: http://192.168.1.131:${KEYCLOAK_PORT}
+      KEYCLOAK_INTERNAL_URL: http://keycloak:${KEYCLOAK_PORT}
       
     ports:
       - "${WEBAPI_PORT}:${WEBAPI_PORT}"
@@ -77,10 +77,12 @@ services:
     container_name: keycloak
     command: start-dev --import-realm
     environment:
-      KC_HOSTNAME: localhost
+      KC_HOSTNAME: 192.168.1.131
       KC_HOSTNAME_PORT: ${KEYCLOAK_PORT}
       KC_HOSTNAME_STRICT: false
       KC_HOSTNAME_STRICT_HTTPS: false
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: true
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres

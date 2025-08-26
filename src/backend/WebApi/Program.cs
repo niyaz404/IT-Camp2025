@@ -31,7 +31,8 @@ public class Program
         var hosts = new[]
         {
             "http://localhost:3000",
-            "http://frontend:3000"
+            "http://frontend:3000",
+            "http://192.168.1.131:3000"
         };
 
         builder.Services.AddCors(options =>
@@ -55,8 +56,8 @@ public class Program
                 var port     = Environment.GetEnvironmentVariable("KEYCLOAK_PORT") ?? "8090";
                 var audience = Environment.GetEnvironmentVariable("KEYCLOAK_AUDIENCE") ?? "webapi";
 
-                var issuer   = $"http://localhost:{port}/realms/{realm}";
-                var jwksUrl  = $"http://host.docker.internal:{port}/realms/{realm}/protocol/openid-connect/certs";
+                var issuer   = $"http://192.168.1.131:{port}/realms/{realm}";
+                var jwksUrl  = $"http://keycloak:8080/realms/{realm}/protocol/openid-connect/certs";
 
                 options.RequireHttpsMetadata = false;
 
