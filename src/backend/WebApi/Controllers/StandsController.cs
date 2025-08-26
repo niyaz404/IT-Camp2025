@@ -5,14 +5,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Share.Services.Interface;
+using WebApi.BLL.Models.Stands;
 using WebApi.BLL.Services.Interfaces.Stands;
 using WebApi.Models.Stands;
 
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
-[Route("api/[controller]/[action]")]
+[Route("[controller]")]
+[Route("api/[controller]")]
 public class StandsController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -28,12 +29,32 @@ public class StandsController : ControllerBase
     
     [HttpGet]
     [Authorize]
+    [Route("[action]")]
     public async Task<ActionResult<IEnumerable<StandDto>>> GetAll()
     {
         try
         {
             var stands = await _standService.GetAll();
             var result = _mapper.Map<IEnumerable<StandDto>>(stands);
+            
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            _logger.Log(e.Message);
+            return BadRequest();
+        }
+    }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("{id:long}")]
+    public async Task<ActionResult<StandWithMotorsDto>> Get(long id)
+    {
+        try
+        {
+            var stand = await _standService.GetById(id);
+            var result = _mapper.Map<StandWithMotorsDto>(stand);
             
             return Ok(result);
         }

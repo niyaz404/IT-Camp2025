@@ -6,6 +6,14 @@
     background-color: #f5f5f5;
 }
 
+.filledBadge{
+    width: 120px;
+}
+
+.strokedBadge {
+    width: 150px;
+}
+
 .motors * {
     justify-content: center;
 }

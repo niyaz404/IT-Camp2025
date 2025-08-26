@@ -12,4 +12,10 @@ public interface IStandService
     /// </summary>
     /// <returns></returns>
     Task<IEnumerable<StandModel>> GetAll();
+    
+    /// <summary>
+    /// Получить стенд
+    /// </summary>
+    /// <returns></returns>
+    Task<StandWithMotorsModel> GetById(long id);
 }

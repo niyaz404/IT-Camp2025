@@ -17,6 +17,11 @@ public abstract class Repository(string connectionString, string mainTableName) 
     /// <summary>
     /// Название основной таблицы репозитория
     /// </summary>
+    protected readonly string _schemaName = PgTables.Schema;
+
+    /// <summary>
+    /// Название основной таблицы репозитория
+    /// </summary>
     protected readonly string _mainTableName = $"{PgTables.Schema}.{mainTableName}";
 
     /// <summary>

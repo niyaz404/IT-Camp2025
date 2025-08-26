@@ -1,0 +1,10 @@
+.tabs {
+    width: 80%!important;
+    margin-left: 10%!important;
+}
+
+@media (max-width: 1200px) {
+    .tabs {
+        margin-left: 0!important;
+    }
+}

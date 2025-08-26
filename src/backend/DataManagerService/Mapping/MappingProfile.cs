@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using DataManagerService.BLL.Models.Defects;
+using DataManagerService.BLL.Models.Motors;
 using DataManagerService.BLL.Models.Stands;
 using DataManagerService.BLL.Models.Users;
+using DataManagerService.Models.Defects;
+using DataManagerService.Models.Motors;
 using DataManagerService.Models.Stands;
 using DataManagerService.Models.Users;
 
@@ -19,5 +23,17 @@ public class MappingProfile : Profile
         
         CreateMap<UserInfoDto, UserInfoModel>();
         CreateMap<UserInfoModel, UserInfoDto>();
+        
+        CreateMap<KeycloakUserDto, KeycloakUserModel>();
+        CreateMap<KeycloakUserModel, KeycloakUserDto>();
+        
+        CreateMap<MotorDto, MotorModel>();
+        CreateMap<MotorModel, MotorDto>();
+        
+        CreateMap<MotorDefectDto, MotorDefectModel>();
+        CreateMap<MotorDefectModel, MotorDefectDto>();
+        
+        CreateMap<MotorWithDefectsDto, MotorWithDefectsModel>();
+        CreateMap<MotorWithDefectsModel, MotorWithDefectsDto>();
     }
 }

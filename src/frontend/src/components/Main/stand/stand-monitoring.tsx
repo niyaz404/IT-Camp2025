@@ -4,9 +4,11 @@ import StandCard from "../stand-card/stand-card";
 import { type StandInfo } from "../../../types/common-types";
 import { Text } from "@consta/uikit/Text";
 import { getAllStands } from "../../../services/stands";
-import "./stand-monitoring.css";
 import { useBreadcrumbs } from "../../../context/BreadcrumbsContext";
 import { useAuth } from "../../../context/AuthContext.tsx";
+import PageWithHeader from "../../share/page-with-header/page-with-header.tsx";
+
+import "./stand-monitoring.css";
 
 export default function StandMonitoring() {
     const [stands, setStands] = useState<StandInfo[]>([]);
@@ -31,8 +33,9 @@ export default function StandMonitoring() {
     }, [authenticated, token, loading]);
 
     return (
-        <div className="monitoring">
-            <Text size="2xl" weight="bold">Стенды</Text>
+        <PageWithHeader header={(
+            <Text size="2xl" weight={"bold"}>Стенды</Text>
+        )}>
             <div className="cardsContainer">
                 {stands.map((stand) => (
                     <StandCard
@@ -42,6 +45,6 @@ export default function StandMonitoring() {
                     />
                 ))}
             </div>
-        </div>
+        </PageWithHeader>
     );
 }

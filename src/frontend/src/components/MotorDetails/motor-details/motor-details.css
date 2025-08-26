@@ -29,5 +29,13 @@
 }
 
 .skeleton{
+    margin-top: -1em;
     border-radius: 10px;
+    margin-bottom: 3em;
+}
+
+@media (max-width: 1200px) {
+    .content {
+        width: 100%!important;
+    }
 }

@@ -1,0 +1,40 @@
+.componentStatusScroll {
+    overflow-x: auto;
+    padding-bottom: 10px;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+}
+
+.componentStatusScroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.componentStatusScroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.componentStatusScroll::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 4px;
+}
+
+.componentStatusScroll::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.componentStatusScroll {
+    scrollbar-width: thin;
+    scrollbar-color: #c5c5c5 transparent;
+}
+
+.componentStatusRow {
+    display: flex;
+    gap: 16px;
+    min-width: max-content;
+    justify-content: center;
+}
+
+.componentStatusRow > * {
+    flex: 0 0 auto;
+}
+

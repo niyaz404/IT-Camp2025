@@ -1,4 +1,7 @@
 .card{
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
     border: 1px solid rgb(0 32 51 / 13%);
     border-radius: 1em;
     min-width: 350px;
@@ -40,7 +43,10 @@
 .stateBadgeContainer{
     display: flex;
     justify-content: flex-start;
+    gap: 1em;
 }
 
-.badgeContainer {
+.alert{
+    border: 2px solid var(--color-bg-alert);
+    box-shadow: 0px 0px 13px 1px var(--color-bg-alert);
 }

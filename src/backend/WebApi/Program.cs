@@ -11,9 +11,11 @@ using Share.Services.Implementation;
 using Share.Services.Interface;
 using StackExchange.Redis;
 using WebApi.BLL.Services.Implementation.Cache;
+using WebApi.BLL.Services.Implementation.Motors;
 using WebApi.BLL.Services.Implementation.Stands;
 using WebApi.BLL.Services.Implementation.Users;
 using WebApi.BLL.Services.Interfaces.Cache;
+using WebApi.BLL.Services.Interfaces.Motors;
 using WebApi.BLL.Services.Interfaces.Stands;
 using WebApi.BLL.Services.Interfaces.Users;
 using WebApi.DAL.Providers.Implementation;
@@ -159,6 +161,8 @@ public class Program
         builder.Services.AddScoped<ILogger, ConsoleLogger>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IStandService, StandService>();
+        builder.Services.AddScoped<IMotorService, MotorService>();
+        
         builder.Services.AddSingleton<IRefreshStoreService, RedisRefreshStoreServiceService>();
         builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
         {
@@ -169,6 +173,7 @@ public class Program
 
         builder.Services.AddScoped<IUserProvider>(p => new UserProvider(dataManagerServiceUrl, p.GetRequiredService<HttpClient>()));
         builder.Services.AddScoped<IStandProvider>(p => new StandProvider(dataManagerServiceUrl, p.GetRequiredService<HttpClient>()));
+        builder.Services.AddScoped<IMotorProvider>(p => new MotorProvider(dataManagerServiceUrl, p.GetRequiredService<HttpClient>()));
 
         builder.Services.AddAutoMapper(
             typeof(MappingProfile).Assembly,
