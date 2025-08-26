@@ -46,6 +46,15 @@
         }
       ],
       "realmRoles": ["ADMIN", "OPERATOR"]
+    },
+    {
+      "username": "service-account-data-manager-service",
+      "enabled": true,
+      "serviceAccountClientId": "data-manager-service",
+      "realmRoles": [],
+      "clientRoles": {
+        "realm-management": ["view-users"]
+      }
     }
   ],
 
@@ -181,6 +190,24 @@
       "bearerOnly": true,
       "authorizationServicesEnabled": false,
       "serviceAccountsEnabled": false
+    },
+    {
+      "clientId": "data-manager-service",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "super-secret-here",
+      "defaultClientScopes": [
+        "web-origins",
+        "role_list",
+        "profile",
+        "email"
+      ]
     }
   ]
 }

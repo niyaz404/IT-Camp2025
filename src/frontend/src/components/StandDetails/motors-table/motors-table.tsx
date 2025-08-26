@@ -1,11 +1,10 @@
 import {Table} from "@consta/uikit/Table";
 import {Text} from "@consta/uikit/Text";
 import {Badge} from "@consta/uikit/Badge";
-import {IconAllDone} from "@consta/icons/IconAllDone";
 import {
     MotorDefectStatus,
     type MotorInfo,
-    MotorState,
+    MotorState, MotorTypeMap,
     type StandDetails,
     StandState
 } from "../../../types/common-types.tsx";
@@ -18,24 +17,25 @@ const getStateBadgeProps = (state: StandDetails | MotorInfo) => {
     switch (state.state) {
         case StandState.On:
         case MotorState.On:
-            return {label: "Активен", status: "success" as const, iconLeft: IconAllDone};
+            return {label: "Активен", status: "success" as const};
         case StandState.Off:
         case MotorState.Off:
-            return {label: "Неактивен", status: "alert" as const, iconLeft: IconAllDone};
+            return {label: "Неактивен", status: "alert" as const};
     }
 
     return {label: "Неизвестно", status: "system" as const};
 };
 
 const getDefectBadgeProps = (motor: MotorInfo) => {
-    switch (motor.defectStatus) {
-        case MotorDefectStatus.None:
-            return {label: "Дефектов нет", status: "success" as const}
-        case MotorDefectStatus.Minor:
-            return {label: "Есть дефект", status: "warning" as const}
-        case MotorDefectStatus.Critical:
-            return {label: "Критический", status: "alert" as const}
+    if(motor.maxSeverity == 0){
+        return {label: "Дефектов нет", status: "success" as const}
     }
+
+    if(motor.maxSeverity > 80){
+        return {label: "Критический", status: "alert" as const}
+    }
+
+    return {label: "Есть дефект", status: "warning" as const}
 
     return {label: "Неизвестно", status: "system" as const};
 };
@@ -46,20 +46,28 @@ export default function MotorsTable({motors}: { motors: MotorInfo[] }) {
     console.log(standId);
 
     const columns: TableColumn<MotorInfo>[] = [
-        {title: "Название", accessor: "name", width: '3fr', renderCell: (row) => <Text>{row.name}</Text>},
         {
             title: "Состояние",
             accessor: "state",
             width: '2fr',
-            renderCell: (row) => <Badge {...getStateBadgeProps(row)} />
+            renderCell: (row) => <Badge  className={"filledBadge"} {...getStateBadgeProps(row)} />
         },
-        {title: "Тип", accessor: "type", width: '2fr', renderCell: (row) => <Text>{row.type}</Text>},
-        {title: "Мощность, кВт", accessor: "power", width: '1fr', renderCell: (row) => <Text>{row.power}</Text>},
+        {
+            title: "Модель",
+            accessor: "name",
+            width: '3fr',
+            renderCell: (row) => <Text weight="bold">{row.name}</Text>
+        },
+        {title: "Производитель", accessor: "manufacturer", width: '3fr', renderCell: (row) => <Text>{row.manufacturer}</Text>},
+        {title: "Заводской номер", accessor: "factoryNumber", width: '3fr', renderCell: (row) => <Text>{row.factoryNumber}</Text>},
+        {title: "Тип", accessor: "type", width: '2fr', renderCell: (row) => <Text>{MotorTypeMap[row.type]}</Text>},
+        {title: "Мощность, кВт", accessor: "power", width: '1fr', renderCell: (row) => <Text>{row.ratedPower}</Text>},
+        {title: "Кол-во дефектов", accessor: "defectsCount", width: '1fr', renderCell: (row) => <Text>{row.defectsCount}</Text>},
         {
             title: "Дефекты",
             accessor: "defectStatus",
             width: '2fr',
-            renderCell: (row) => <Badge view={"stroked"} {...getDefectBadgeProps(row)} />
+            renderCell: (row) => <Badge view={"stroked"} className={"strokedBadge"} {...getDefectBadgeProps(row)} />
         },
     ];
 

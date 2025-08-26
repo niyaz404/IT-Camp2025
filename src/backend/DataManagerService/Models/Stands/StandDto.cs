@@ -9,7 +9,7 @@ namespace DataManagerService.Models.Stands;
 public class StandDto
 {
     /// <summary>
-    /// Иденитфикатор
+    /// Идентификатор
     /// </summary>
     public long Id { get; set; }
     
@@ -24,27 +24,37 @@ public class StandDto
     public string Description { get; set; }
     
     /// <summary>
-    /// Количество фаз
+    /// Состояние
     /// </summary>
-    public long PhasesCount { get; set; }
+    public StandState State { get; set; }
     
     /// <summary>
-    /// Частота дискретизации, кГц
+    /// Местоположение
     /// </summary>
-    public decimal Frequency { get; set; }
+    public string Location { get; set; }
     
     /// <summary>
-    /// Мощность, кВт
+    /// Количество электродвигателей на стенде
     /// </summary>
-    public decimal Power { get; set; }
+    public int MotorsCount { get; set; }
     
     /// <summary>
     /// Ответственный
     /// </summary>
-    public UserInfoDto ResponsiblePerson { get; set; }
+    public KeycloakUserDto ResponsiblePerson { get; set; }
     
     /// <summary>
-    /// Состояние
+    /// Дата создания (UTC)
     /// </summary>
-    public StandState State { get; set; }
+    public DateTime CreatedAt { get; set; }
+    
+    /// <summary>
+    /// Дата последнего обновления (UTC)
+    /// </summary>
+    public DateTime UpdatedAt { get; set; }
+    
+    /// <summary>
+    /// Количество дефектов
+    /// </summary>
+    public long DefectsCount { get; set; }
 }

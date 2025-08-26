@@ -1,5 +1,6 @@
 :root {
-  --left-offset: 5em;
+  --left-offset: 3em;
+  --right-offset: 2em;
 }
 
 .app{

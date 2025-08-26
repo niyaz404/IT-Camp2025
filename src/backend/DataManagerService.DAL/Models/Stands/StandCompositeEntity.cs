@@ -7,10 +7,10 @@ namespace DataManagerService.DAL.Models.Stands;
 /// <summary>
 /// Сущность стенда
 /// </summary>
-public class StandCompositeEntity : BaseEntity
+public class StandCompositeEntity : CompositeEntity
 {
     /// <summary>
-    /// Иденитфикатор
+    /// Идентификатор
     /// </summary>
     public long Id { get; set; }
     
@@ -25,27 +25,37 @@ public class StandCompositeEntity : BaseEntity
     public string Description { get; set; }
     
     /// <summary>
-    /// Количество фаз
-    /// </summary>
-    public long PhasesCount { get; set; }
-    
-    /// <summary>
-    /// Частота дискретизации, кГц
-    /// </summary>
-    public decimal Frequency { get; set; }
-    
-    /// <summary>
-    /// Мощность, кВт
-    /// </summary>
-    public decimal Power { get; set; }
-    
-    /// <summary>
     /// Состояние
     /// </summary>
     public StandState State { get; set; }
     
     /// <summary>
+    /// Местоположение
+    /// </summary>
+    public string Location { get; set; }
+    
+    /// <summary>
+    /// Количество электродвигателей на стенде
+    /// </summary>
+    public int MotorsCount { get; set; }
+    
+    /// <summary>
     /// Ответственный
     /// </summary>
-    public UserEntity ResponsiblePerson { get; set; }
+    public Guid? ResponsiblePersonId { get; set; }
+    
+    /// <summary>
+    /// Дата создания (UTC)
+    /// </summary>
+    public DateTime CreatedAt { get; set; }
+    
+    /// <summary>
+    /// Дата последнего обновления (UTC)
+    /// </summary>
+    public DateTime UpdatedAt { get; set; }
+    
+    /// <summary>
+    /// Количество дефектов
+    /// </summary>
+    public long DefectsCount { get; set; }
 }

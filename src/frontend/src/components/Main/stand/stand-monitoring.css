@@ -11,4 +11,5 @@
     justify-content: center;
     grid-template-columns: repeat(auto-fill, minmax(350px, 20%));
     gap: 4em;
+    margin-top: 32px;
 }

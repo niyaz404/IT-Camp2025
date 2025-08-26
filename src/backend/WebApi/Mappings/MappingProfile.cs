@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using WebApi.BLL.Models.Auth;
+using WebApi.BLL.Models.Defects;
+using WebApi.BLL.Models.Motors;
 using WebApi.BLL.Models.Stands;
 using WebApi.BLL.Models.Users;
-using WebApi.DAL.Models.Implementation.Users;
 using WebApi.Models.Auth;
+using WebApi.Models.Defects;
+using WebApi.Models.Motors;
 using WebApi.Models.Stands;
 using WebApi.Models.Users;
 
@@ -28,6 +31,21 @@ public class MappingProfile : Profile
         
         CreateMap<StandDto, StandModel>();
         CreateMap<StandModel, StandDto>();
+        
+        CreateMap<StandWithMotorsDto, StandWithMotorsModel>();
+        CreateMap<StandWithMotorsModel, StandWithMotorsDto>();
+        
+        CreateMap<KeycloakUserDto, KeycloakUserModel>();
+        CreateMap<KeycloakUserModel, KeycloakUserDto>();
+        
+        CreateMap<MotorDto, MotorModel>();
+        CreateMap<MotorModel, MotorDto>();
+        
+        CreateMap<MotorDefectDto, MotorDefectModel>();
+        CreateMap<MotorDefectModel, MotorDefectDto>();
+        
+        CreateMap<MotorWithDefectsDto, MotorWithDefectsModel>();
+        CreateMap<MotorWithDefectsModel, MotorWithDefectsDto>();
     }
 
 }

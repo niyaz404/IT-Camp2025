@@ -26,6 +26,9 @@
       <_ContentIncludedByDefault Remove="DataManagerService.BLL\obj\project.packagespec.json" />
       <_ContentIncludedByDefault Remove="DataManagerService.Consts\obj\DataManagerService.Consts.csproj.nuget.dgspec.json" />
       <_ContentIncludedByDefault Remove="DataManagerService.Consts\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="DataManagerService.PostgresMigrator\obj\DataManagerService.PostgresMigrator.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="DataManagerService.PostgresMigrator\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="DataManagerService.PostgresMigrator\obj\project.packagespec.json" />
     </ItemGroup>
 
 </Project>

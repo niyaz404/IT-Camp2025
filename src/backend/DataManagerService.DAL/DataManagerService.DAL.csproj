@@ -8,11 +8,18 @@
 
     <ItemGroup>
       <PackageReference Include="Dapper" Version="2.1.66" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Npgsql" Version="9.0.3" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\DataManagerService.Common\DataManagerService.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
+        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.19\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
