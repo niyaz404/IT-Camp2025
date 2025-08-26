@@ -63,4 +63,23 @@ public class MotorsController : ControllerBase
             return BadRequest();
         }
     }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("/current_upload")]
+    public async Task<ActionResult<MotorWithDefectsDto>> CurrentFileUpload(long id)
+    {
+        try
+        {
+            var motor = await _motorService.GetMotorByIdAsync(id);
+            var result = _mapper.Map<MotorWithDefectsDto>(motor);
+            
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            _logger.Log(e.Message);
+            return BadRequest();
+        }
+    }
 }

@@ -27,6 +27,7 @@ import {History} from "../history/history.tsx";
 import motorImg from '../../../assets/images/default_motor.png';
 
 import "./motor-details.css"
+import CsvUploader from "../csv-uploader/csv-uploader.tsx";
 
 export default function MotorDetailsPage() {
     const {motorId} = useParams<{motorId: string}>();
@@ -131,6 +132,7 @@ export default function MotorDetailsPage() {
                                         }
                                     </div>
                                     <div className={"buttonContainer"}>
+                                        <CsvUploader />
                                         <Button size={"s"} view={"ghost"} label="Выписать" disabled/>
                                         <Button size={"s"} label="Отправить на ТО" disabled/>
                                     </div>
