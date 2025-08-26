@@ -81,8 +81,8 @@ services:
   dms_postgres_migrator:
     container_name: dms_postgres_migrator
     build:
-      context: /../../
-      dockerfile: /ci/dockerfiles/DMSPostgresMigrator.Dockerfile
+      context: ../../
+      dockerfile: ci/dockerfiles/DMSPostgresMigrator.Dockerfile
     depends_on:
       - dms_postgres
     environment:
